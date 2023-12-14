@@ -23,4 +23,10 @@ matches := append(reWords.FindAllString(myReverseSubstr, -1), reDigits.FindAllSt
 
 ```
 
-Also realise that don't need to iterate through backwards if no match is found in forwards direction.
+## Problem day 1
+
+run using
+
+`go run main.go part2.go 1` or `go run main.go part2.go 2`
+
+depending on which problem you would like to run the code for.

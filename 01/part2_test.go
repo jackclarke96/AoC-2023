@@ -12,7 +12,7 @@ var resultsMap = map[string]string{
 
 func TestIterateThroughString(t *testing.T) {
 	for input, _ := range resultsMap {
-		result := iterateThroughString(input)
+		result := findFirstLastNum(input, "2")
 		if result != resultsMap[input] {
 			t.Errorf("For input '%v', expected output '%v', but got '%v'", input, resultsMap[input], result)
 		}
