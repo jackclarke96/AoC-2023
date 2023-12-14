@@ -9,12 +9,16 @@ import (
 	"strings"
 )
 
-type colourMap map[string]int
+type ColourCounts struct {
+	Red   int
+	Green int
+	Blue  int
+}
 
-var myColourMap = colourMap{
-	"red":   12,
-	"green": 13,
-	"blue":  14,
+var myColourMap ColourCounts = ColourCounts{
+	Red:   12,
+	Green: 13,
+	Blue:  14,
 }
 
 var numberRegexp = regexp.MustCompile("[0-9]+")
@@ -50,43 +54,46 @@ func main() {
 	fmt.Println(total)
 }
 
-func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) colourMap {
+func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) ColourCounts {
 
-	maxMap := map[string]int{
-		"red":   0,
-		"green": 0,
-		"blue":  0,
+	maxCounts := ColourCounts{
+		Red:   0,
+		Blue:  0,
+		Green: 0,
 	}
-
 	for j, colour := range coloursDrawn {
 		timesDrawn, err := strconv.Atoi(numberOfTimes[j])
 		if err != nil {
 			log.Println("Error extracting number")
 			continue
 		}
-		if (maxMap[colour]) < timesDrawn {
-			maxMap[colour] = timesDrawn
+		switch colour {
+		case "red":
+			if maxCounts.Red < timesDrawn {
+				maxCounts.Red = timesDrawn
+			}
+		case "green":
+			if maxCounts.Green < timesDrawn {
+				maxCounts.Green = timesDrawn
+			}
+		case "blue":
+			if maxCounts.Blue < timesDrawn {
+				maxCounts.Blue = timesDrawn
+			}
+		default:
+			log.Printf("Unknown color: %s", colour)
 		}
 	}
-	return maxMap
+	return maxCounts
 }
 
-func (c colourMap) getCubes() int {
-	fmt.Println(c)
-	fmt.Println(c["red"] * c["green"] * c["blue"])
-	return c["red"] * c["green"] * c["blue"]
+func (c ColourCounts) getCubes() int {
+	return c.Red * c.Blue * c.Green
 }
 
 func checkGameValid(coloursDrawn []string, numberOfTimes []string) bool {
-	for j, colour := range coloursDrawn {
-		num, err := strconv.Atoi(numberOfTimes[j])
-		if err != nil {
-			log.Println("Error extracting number")
-			continue
-		}
-		if (myColourMap[colour]) < num {
-			return false
-		}
-	}
-	return true
+	maxCounts := getMaximumOfEachColour(coloursDrawn, numberOfTimes)
+	return maxCounts.Blue <= myColourMap.Blue &&
+		maxCounts.Green <= myColourMap.Green &&
+		maxCounts.Red <= myColourMap.Red
 }
