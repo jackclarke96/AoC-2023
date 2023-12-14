@@ -16,50 +16,51 @@ var numberMap = map[string]string{
 	"nine":  "9",
 }
 
-func iterateThroughString(s string) string {
-	numberWordsPattern := `one|two|three|four|five|six|seven|eight|nine`
-	numberDigitsPattern := `1|2|3|4|5|6|7|8|9`
-	reWords := regexp.MustCompile(numberWordsPattern)
-	reDigits := regexp.MustCompile(numberDigitsPattern)
+var numberWordsPattern = `one|two|three|four|five|six|seven|eight|nine`
+var numberDigitsPattern = `1|2|3|4|5|6|7|8|9`
+var reWords = regexp.MustCompile(numberWordsPattern)
+var reDigits = regexp.MustCompile(numberDigitsPattern)
 
-	myNum := findFirstNumberForward(s, reWords, reDigits)
+func findFirstLastNum(s string, problem string) string {
 
+	myNum := findFirstNumberForward(s, problem)
 	if myNum != "" {
-		return myNum + findFirstNumberBackward(s, reWords, reDigits)
+		return myNum + findFirstNumberBackward(s, problem)
 	}
 	return ""
 }
 
-func findFirstNumberInSubstring(substr string, reWords, reDigits *regexp.Regexp) string {
-	stringMatch := reWords.FindString(substr)
-	if stringMatch != "" {
-		return numberMap[stringMatch]
-	}
-	// alternative combined syntax
-	if numberMatch := reDigits.FindString(substr); numberMatch != "" {
+func findFirstNumberInSubstring(substr string, problem string) string {
+	numberMatch := reDigits.FindString(substr)
+	if numberMatch != "" {
 		return numberMatch
 	}
+	if problem == "2" {
+		// alternative combined syntax for conditionals and assigining vars
+		if stringMatch := reWords.FindString(substr); stringMatch != "" {
+			return numberMap[stringMatch]
+		}
+	}
+
 	return ""
 }
 
-func findFirstNumberForward(s string, reWords, reDigits *regexp.Regexp) string {
+func findFirstNumberForward(s string, problem string) string {
 	for i := 0; i < len(s); i++ {
 		substr := s[:i+1]
-		if num := findFirstNumberInSubstring(substr, reWords, reDigits); num != "" {
+		if num := findFirstNumberInSubstring(substr, problem); num != "" {
 			return num
 		}
 	}
 	return ""
 }
 
-func findFirstNumberBackward(s string, reWords, reDigits *regexp.Regexp) string {
+func findFirstNumberBackward(s string, problem string) string {
 	for i := len(s); i >= 0; i-- {
 		substr := s[i:]
-		if num := findFirstNumberInSubstring(substr, reWords, reDigits); num != "" {
+		if num := findFirstNumberInSubstring(substr, problem); num != "" {
 			return num
 		}
 	}
 	return ""
 }
-
-// func reverseString(s string) string {}
