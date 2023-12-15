@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -26,13 +25,20 @@ var colourRegExp = regexp.MustCompile(`red|blue|green`)
 
 func main() {
 
-	problem := os.Args[1]
+	problem, filePath := os.Args[1], os.Args[2]
+
 	if !(problem == "1" || problem == "2") {
 		log.Fatalf("Please provide number indicating which problem is to be solved")
 	}
 
+	total := executeMain(problem, filePath)
+
+	log.Println(total)
+}
+
+func executeMain(problem string, filePath string) int {
 	total := 0
-	input, err := os.ReadFile("./files/input.txt")
+	input, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Failed to read input file.")
 	}
@@ -51,7 +57,7 @@ func main() {
 			total += getMaximumOfEachColour(colourMatch, numberMatch).getCubes()
 		}
 	}
-	fmt.Println(total)
+	return total
 }
 
 func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) ColourCounts {

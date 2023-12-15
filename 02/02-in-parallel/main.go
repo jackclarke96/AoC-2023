@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -26,13 +25,20 @@ var colourRegExp = regexp.MustCompile(`red|blue|green`)
 
 func main() {
 
-	problem := os.Args[1]
+	problem, filePath := os.Args[1], os.Args[2]
+
 	if !(problem == "1" || problem == "2") {
 		log.Fatalf("Please provide number indicating which problem is to be solved")
 	}
 
+	total := executeMain(problem, filePath)
+
+	log.Println(total)
+}
+
+func executeMain(problem string, filePath string) int {
 	total := 0
-	input, err := os.ReadFile("./files/input.txt")
+	input, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Failed to read input file.")
 	}
@@ -51,10 +57,11 @@ func main() {
 		total += <-c
 	}
 
-	fmt.Println(total)
+	return total
+
 }
 
-func processChunk(chunk []string, problem string, chunkNumber int, chunckSize int, c chan int) {
+func processChunk(chunk []string, problem string, chunkNumber int, chunkSize int, c chan int) {
 	total := 0
 	for i, game := range chunk {
 		numberMatch := numberRegexp.FindAllString(game, -1)[1:]
@@ -62,7 +69,7 @@ func processChunk(chunk []string, problem string, chunkNumber int, chunckSize in
 
 		if problem == "1" {
 			if checkGameValid(colourMatch, numberMatch) {
-				total += i + 1 + chunkNumber*chunckSize
+				total += i + 1 + chunkNumber*chunkSize
 			}
 		} else {
 			total += getMaximumOfEachColour(colourMatch, numberMatch).getCubes()
@@ -70,8 +77,8 @@ func processChunk(chunk []string, problem string, chunkNumber int, chunckSize in
 
 	}
 	c <- total
-
 }
+
 func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) ColourCounts {
 
 	maxCounts := ColourCounts{
@@ -102,6 +109,7 @@ func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) Colou
 			log.Printf("Unknown color: %s", colour)
 		}
 	}
+
 	return maxCounts
 }
 
@@ -123,12 +131,9 @@ func chunkSlice(slice []string, chunkSize int) [][]string {
 			break
 		}
 
-		// necessary check to avoid slicing beyond
-		// slice capacity
 		if len(slice) < chunkSize {
 			chunkSize = len(slice)
 		}
-
 		chunks = append(chunks, slice[0:chunkSize])
 		slice = slice[chunkSize:]
 	}
