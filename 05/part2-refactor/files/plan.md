@@ -4,24 +4,23 @@ Brute forcing this would be very inefficient.
 
 instead, convert the maps into a set of functions e.g. 
 
-for a <= x < b, x1 = f1(x0)
-for c <= x < d, y1 = f2(x0)
+For a <= x0 < b, x1 = f1(x0)
 
-then can compose the functions
+For c <= x0 < d, x1 = f2(x0)
 
-my equations at map 1 are basically
+...
 
-x1 = x0 + a for x0Min, x0Max > 0.
+Then we can can compose the functions at each later
 
-then x2 = x1 + b for specific ranges of x1
+The equations at map 1 are basically:
 
-but x1 = x0 + a
+* x1 = x0 + a for x0Min, x0Max > 0.
 
-so x1 = x10 + a1 + a2 for some new x0Min, x0Max.
+* x2 = x1 + b for specific ranges of x1
 
-I can split the initial range by working backwards and using mins and maxes.
+* but x1 = x0 + a ,so x2 = x1 + a + b for some new x0Min, x0Max.
 
-i can start out with map 1 as 3 different structs for the below:
+We can then split the initial range by working backwards and using mins and maxes.
 
 seed-to-soil map:
 
@@ -41,7 +40,7 @@ x0Min = 98, x0Max= 99,  a = -48.             x1 = x0 - 48 for 98 <= x0 <= 99    
 x0Min = 50, x0Max = 97, a = 2                x1 = x0 + 2  for 50 <= x0 <= 98    (2)
 x0Min = 1,  x0Max = 49, a = 0                x1 = x0      for 0  <= x0 <= 49    (3)
 
-Then for iteration 2 i have
+Then for iteration 2 we have
 
 x1Min 15, x1Max 51, a = -15                  x2 = x1 - 15 for 15 <= x1 <= 53     (4)
 x1Min 52, x1Max 53, a = -15
@@ -111,7 +110,7 @@ f(x1) = {
 }
 ```
 
-I will represent this using a slice of structs, ordered by x1Min
+We will represent this using a slice of structs, ordered by x1Min
 
 
 ```
