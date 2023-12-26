@@ -103,14 +103,13 @@ gives, using
 
 x2 = x1 + col1 - col2     for col2 <= x1 <= col2 + col3 - 1
 
+```
 f(x1) = {
-   
    x2 = x1 - 48:           98 <= x1
-
    x2 = x1 + 2:            50 <= x1 <= 97
-
    x2 = x1:                x1 <= 49
 }
+```
 
 I will represent this using a slice of structs, ordered by x1Min
 
