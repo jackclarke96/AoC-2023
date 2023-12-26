@@ -2,38 +2,26 @@ package main
 
 // each map can be rewritten as f(x) where a < x <=b
 // rewriting in this way we can find ranges
+
 import (
 	"fmt"
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
-type SingleMapping []int
-type FormattedMap []SingleMapping
-
-type LinearEquation struct {
-	minInput  int
-	maxInput  int
-	transform int
-}
-
-type InputRange struct {
-	minInput int
-	maxInput int
-}
-
-type PiecewiseFunction []LinearEquation
-type FullPiecewiseMap []PiecewiseFunction
-
 func main() {
+	start := time.Now()
 	file, err := os.ReadFile("./files/input.txt")
 	if err != nil {
 		log.Fatalf("Failed to read the input file: %v", err)
 	}
 
 	fileStr := string(file)
-	executeMain(fileStr)
+	fmt.Println(executeMain(fileStr))
+	elapsed := time.Since(start)
+	fmt.Printf("page took %s", elapsed)
 }
 
 func ParseIntoPiecewiseFunctions(fileStr []string) FullPiecewiseMap {
@@ -58,7 +46,5 @@ func executeMain(fileStr string) int {
 
 	composed := ComposeFullMap(piecewiseFuncs)
 	output := Intersect(inputSlice, composed)
-	fmt.Println(output)
 	return output
-
 }

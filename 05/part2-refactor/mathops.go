@@ -12,7 +12,7 @@ func Intersect(input []InputRange, composedFunction PiecewiseFunction) int {
 	minOutput := -1
 	for i := 0; i < len(input); i++ {
 		inputMin := input[i].minInput
-		inputMax := input[i].maxInput
+		inputMax := input[i].maxInput // could apply binary search here
 		for j := 0; j < len(composedFunction); j++ {
 			if inputMin > composedFunction[j].maxInput || inputMax < composedFunction[j].minInput {
 				continue
