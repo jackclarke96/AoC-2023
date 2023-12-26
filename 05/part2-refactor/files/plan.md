@@ -1,24 +1,22 @@
 # Plan
 
-Brute forcing this would be very inefficient.
+Brute forcing this would be very inefficient. Instead, convert the maps into a set of functions e.g. 
 
-instead, convert the maps into a set of functions e.g. 
+For a <= x0 < b, x1 = f1(x0),
 
-For a <= x0 < b, x1 = f1(x0)
-
-For c <= x0 < d, x1 = f2(x0)
+For c <= x0 < d, x1 = f2(x0),
 
 ...
 
-Then we can can compose the functions at each later
+Then we can can compose the functions at each layer.
 
-The equations at map 1 are basically:
+The equations are basically:
 
 * x1 = x0 + a for x0Min, x0Max > 0.
 
 * x2 = x1 + b for specific ranges of x1
 
-* but x1 = x0 + a ,so x2 = x1 + a + b for some new x0Min, x0Max.
+* but x1 = x0 + a, so x2 = x1 + a + b for some new x0Min, x0Max.
 
 We can then split the initial range by working backwards and using mins and maxes.
 
@@ -86,7 +84,9 @@ So overall we get:
 3. Repeat steps 1 and 2 but replace equation 4 with the remaining equations in iteration 2.
 4. Repeat steps 1 2 and 3 for layers 3, 4, 5, 6 and 7. Will have x6 in terms of x0 only.
 
-After this we can
+After this, intersect the input ranges with the ranges for the fully composed piecewise function of layer 6. The composed functions are **always** of the form x6 = x0 + a, where a is a constant. This means testing only the lowest possible value of in the intersection is necessary. 
+
+We will then be able to see the lowest possible value outputted by the map.
 
 ### Algorithm PseudoCode:
 
