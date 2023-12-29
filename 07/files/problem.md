@@ -76,18 +76,52 @@ After that, iterate through hand. if hand1[0] > hand2[0], hand 1 wins. All the w
 It is implied that hands should not be reordered. 
 
 ## Plan 
+
+### Data Structure Choices
+
 create a map ranking each card e.g. 
 
 {
 "A", 14
 "K", 13
 ...
- }
+}
 
-Then using `func Count(s, substr string) int` provided by standard library in order, could test each hand in sequence.
+as well as a map ranking each hand:
 
-Algorithm for this? Could use go standard order function.
+```go
+var handScoreMap = map[string]int{
+	"FiveOfAKind":  7,
+	"FourOfAKind":  6,
+	"FullHouse":    5,
+	"ThreeOfAKind": 4,
+	"TwoPair":      3,
+	"OnePair":      2,
+	"HighCard":     1,
+}
+```
 
-Will do that. Then maybe implement a quicksort manually.
+Then, when parsing the input file, format each line into the below struct and generate a slice of these structs:
 
+```go
+type Hand struct {
+	cards       string
+	cardsScores []int
+	handScore   int
+	bid         int
+}
+```
+
+
+## Algorithm
+
+The below plan allows for concurrency
+
+1. Preprocess each hand into the `Hand` struct from above. Calculate `handScore` by creating a `handMap` that stores each character against it's frequency in the hand. Can then just use the length of the map, in combination with the frequencies of each card, to determine the score. Also loop through the string and create the `cardScores` entry by mapping each character in the string to it's numerical value in a slice of ints. 
+
+2. Sort based on the hand types alone. This is easy, just loop the slice of hands and group by their `handScore`.
+
+3. After that, perform a second sort on each of the now divided `handScores`. For each `handScore` group, order based on the `cardScores` int slice created in step 1. This step can be done concurrently. Each group will be sorted in its own goroutine.
+
+4. Iterate through the now fully ordered input, taking `totalWinnings += hand.bid*handIndex-1`
 

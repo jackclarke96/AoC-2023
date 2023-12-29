@@ -5,48 +5,8 @@ import (
 	"log"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
-
-var cardToScoreMap = map[string]int{
-	"A": 14,
-	"K": 13,
-	"Q": 12,
-	"J": 11,
-	"T": 10,
-	"9": 9,
-	"8": 8,
-	"7": 7,
-	"6": 6,
-	"5": 5,
-	"4": 4,
-	"3": 3,
-	"2": 2,
-}
-
-var handScoreMap = map[string]int{
-	"FiveOfAKind":  7,
-	"FourOfAKind":  6,
-	"FullHouse":    5,
-	"ThreeOfAKind": 4,
-	"TwoPair":      3,
-	"OnePair":      2,
-	"HighCard":     1,
-}
-
-type SortedHandsResult struct {
-	index int
-	hands []Hand
-}
-type CountMap map[string]int
-
-type Hand struct {
-	cards       string
-	cardsScores []int
-	handScore   int
-	bid         int
-}
 
 func main() {
 	input, err := os.ReadFile("../files/input.txt")
@@ -56,15 +16,21 @@ func main() {
 	executeMain(string(input))
 }
 
+// orchestrator
 func executeMain(inputString string) {
+	sortedHandsChannel := make(chan SortedHandsResult)
 	handStrings := strings.Split(inputString, "\n")
-	handsStructSlice := make([]Hand, len(handStrings))
+
+	// Parse input into desired Hand struct format
+	handsStructSlice := make([]Hand, len(handStrings)) // We know the length of the slice in advance. More efficient to do this
 	for i, handString := range handStrings {
 		handsStructSlice[i] = generateHandStruct(handString)
 	}
-	orderedByHand := sortByHandScore(handsStructSlice)
 
-	sortedHandsChannel := make(chan SortedHandsResult)
+	// irst group by hand score.
+	orderedByHand := groupByHandScore(handsStructSlice)
+
+	// Then order each division by card scores concurrently.
 	orderedByScore := make([][]Hand, 7)
 	for i, _ := range orderedByHand {
 		go func(ind int) {
@@ -72,6 +38,7 @@ func executeMain(inputString string) {
 		}(i)
 	}
 
+	// wait for responses of each goroutine.
 	for range orderedByScore {
 		result := <-sortedHandsChannel
 		orderedByScore[result.index] = result.hands
@@ -79,6 +46,36 @@ func executeMain(inputString string) {
 	fmt.Println(calculateTotalWinnings(orderedByHand))
 }
 
+// group by hand
+func groupByHandScore(hands []Hand) [][]Hand {
+	orderedByHand := make([][]Hand, 7)
+	for i := 0; i < len(hands); i++ {
+		orderedByHand[hands[i].handScore-1] = append(orderedByHand[hands[i].handScore-1], hands[i])
+	}
+	return orderedByHand
+}
+
+// iterate through hands with the same HandScore and order based on cardScores
+func sortByCardScores(hands []Hand) []Hand {
+	sort.Slice(hands, func(i, j int) bool {
+		return compareCardScores(hands[i].cardsScores, hands[j].cardsScores)
+	})
+	return hands
+}
+
+// compare hand A and hand B and order based on cardScores
+func compareCardScores(a, b []int) bool {
+	for i := 0; i < len(a); i++ {
+		if a[i] > b[i] {
+			return false
+		} else if b[i] > a[i] {
+			return true
+		}
+	}
+	return true
+}
+
+// loop through fully ordered hands and get total winnings
 func calculateTotalWinnings(orderedHands [][]Hand) int {
 	ranking := 1
 	totalWinnings := 0
@@ -89,99 +86,4 @@ func calculateTotalWinnings(orderedHands [][]Hand) int {
 		}
 	}
 	return totalWinnings
-}
-
-func generateHandStruct(s string) Hand {
-	parts := strings.Split(s, " ")
-	bid, err := strconv.Atoi(parts[1])
-	if err != nil {
-		log.Fatalf("Error parsing bid")
-	}
-	handString := parts[0]
-	countMap := generateHandMap(handString)
-
-	return Hand{
-		handString,
-		generateCardScores(handString),
-		generateHandScore(countMap),
-		bid,
-	}
-}
-
-func generateHandScore(c CountMap) int {
-	mapLength := len(c)
-	switch mapLength {
-	case 1:
-		return handScoreMap["FiveOfAKind"]
-	case 2:
-		return c.evaluateLengthTwoMaps()
-	case 3:
-		return c.evaluateLengthThreeMaps()
-	case 4:
-		return handScoreMap["OnePair"]
-	}
-	return handScoreMap["HighCard"]
-}
-
-func (c CountMap) evaluateLengthTwoMaps() int {
-	for _, value := range c {
-		if value == 1 || value == 4 {
-			return handScoreMap["FourOfAKind"]
-		}
-	}
-	return handScoreMap["FullHouse"]
-}
-
-func (c CountMap) evaluateLengthThreeMaps() int {
-	for _, value := range c {
-		if value == 3 {
-			return handScoreMap["ThreeOfAKind"]
-		} else if value == 2 {
-			return handScoreMap["TwoPair"]
-		}
-	}
-	return handScoreMap["FullHouse"]
-}
-
-func generateHandMap(s string) CountMap {
-	countMap := make(CountMap)
-	for _, char := range s {
-		countMap[string(char)]++
-	}
-	return countMap
-}
-
-func generateCardScores(s string) []int {
-	cardScores := make([]int, len(s))
-	for i, char := range s {
-		cardScores[i] = cardToScoreMap[string(char)]
-	}
-	return cardScores
-}
-
-func sortByHandScore(hands []Hand) [][]Hand {
-	orderedByHand := make([][]Hand, 7)
-	for i := 0; i < len(hands); i++ {
-		orderedByHand[hands[i].handScore-1] = append(orderedByHand[hands[i].handScore-1], hands[i])
-	}
-	return orderedByHand
-}
-
-func sortByCardScores(hands []Hand) []Hand {
-	sort.Slice(hands, func(i, j int) bool {
-		return compareCardScores(hands[i].cardsScores, hands[j].cardsScores)
-	})
-	return hands
-}
-
-func compareCardScores(a, b []int) bool {
-	for i := 0; i < len(a); i++ {
-		if a[i] > b[i] {
-			return false
-		} else if b[i] > a[i] {
-			return true
-		}
-	}
-
-	return true
 }
