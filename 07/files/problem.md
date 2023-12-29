@@ -125,3 +125,58 @@ The below plan allows for concurrency
 
 4. Iterate through the now fully ordered input, taking `totalWinnings += hand.bid*handIndex-1`
 
+# part 2
+
+--- Part Two ---
+To make things a little more interesting, the Elf introduces one additional rule. Now, J cards are jokers - wildcards that can act like whatever card would make the hand the strongest type possible.
+
+To balance this, J cards are now the weakest individual cards, weaker even than 2. The other cards stay in the same order: A, K, Q, T, 9, 8, 7, 6, 5, 4, 3, 2, J.
+
+J cards can pretend to be whatever card is best for the purpose of determining hand type; for example, QJJQ2 is now considered four of a kind. However, for the purpose of breaking ties between two hands of the same type, J is always treated as J, not the card it's pretending to be: JKKK2 is weaker than QQQQ2 because J is weaker than Q.
+
+Now, the above example goes very differently:
+
+32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483
+32T3K is still the only one pair; it doesn't contain any jokers, so its strength doesn't increase.
+KK677 is now the only two pair, making it the second-weakest hand.
+T55J5, KTJJT, and QQQJA are now all four of a kind! T55J5 gets rank 3, QQQJA gets rank 4, and KTJJT gets rank 5.
+With the new joker rule, the total winnings in this example are 5905.
+
+Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?
+
+## Plan
+
+Due to the format of the Hand struct and the complete separation of the hand calculation and the cardScores calculation, all i n 
+need to do is:
+
+1. Edit the `generateHandMap` function to add the j frequency value to the most frequent (non-J) character in the map. This means the hand will score as highly as possible BUT the `handScores` slice will be unaffected, and so the later sort on card scores will not be affected by the change in the map.
+2. Update J to be lowest scoring card. This handles the later sort.
+
+
+```go
+func generateHandMap(s string) CountMap {
+	countMap := make(CountMap)
+	for _, char := range s {
+		countMap[string(char)]++
+	}
+
+	highestNumberOfAppearances := 0
+	var mostFrequentChar string
+	if jFrequency, ok := countMap["J"]; ok {
+		delete(countMap, "J")
+		for key, val := range countMap {
+			if val > highestNumberOfAppearances {
+				highestNumberOfAppearances = val
+				mostFrequentChar = key
+			}
+		}
+		countMap[mostFrequentChar] += jFrequency
+	}
+
+	return countMap
+}
+```
