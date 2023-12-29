@@ -30,3 +30,22 @@ run using
 `go run main.go part2.go 1` or `go run main.go part2.go 2`
 
 depending on which problem you would like to run the code for.
+
+## Concurrency
+
+* Remember the closure loop vars that cause inconsistent concurrent behaviour
+
+# Process
+
+
+## Days 
+
+Dys 1-3. Just get it done. Don't care about efficiency, just learn the language a bit. Use concurrency
+
+Days 4-7: Start to think more abou data structure choice. Enhance readability and lookup times etc. Good example for readability day 7. Also think about efficiency using algorithms
+
+# Things learnt
+
+Algorithms!
+
+Sorting(day 7), taking minima and maxim (day 5), binary search (day 5), 
