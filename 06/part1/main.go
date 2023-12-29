@@ -52,6 +52,7 @@ func getMarginOfError(Tvals, Dvals []string) {
 			c <- getRange(convertStringToInt(Tvals[idx]), convertStringToInt(Dvals[idx]), c)
 		}(i)
 	}
+
 	for range Tvals {
 		result := <-c
 		fmt.Println(result)
