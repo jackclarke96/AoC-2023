@@ -1,3 +1,5 @@
+# Part 1
+
 --- Day 9: Mirage Maintenance ---
 You ride the camel through the sandstorm and stop where the ghost's maps told you to stop. The sandstorm subsequently subsides, somehow seeing you standing at an oasis!
 
@@ -67,10 +69,38 @@ Analyze your OASIS report and extrapolate the next value for each history. What 
 
 ## Step 1 - work forwards
 
-Represent as 2d slice. Then `s[i+1][j] = s[i][j+1] - s[i][j]`
+Represent as 2d slice. Then `s[i+1][j] = s[i][j+1] - s[i][j]` 
 
-At each step we know the size of the 1d slice, so we can create empty and fill in.
+At each step we know the size of the 1d slice in the next row, so we can create empty of length current slice -1 and fill in until we get a row in which all values are the same.
 
 ## Step 2 - work backwards
 
-`s[i-1][j+1] = s[i][j] + s[i-1][j]` 
+`s[i-1][j+1] = s[i][j] + s[i-1][j]`  to fill in upwards and get the prediction
+
+## step 3 
+
+sub each of the final values in the first row
+
+# Part 2
+
+--- Part Two ---
+Of course, it would be nice to have even more history included in your report. Surely it's safe to just extrapolate backwards as well, right?
+
+For each history, repeat the process of finding differences until the sequence of differences is entirely zero. Then, rather than adding a zero to the end and filling in the next values of each previous sequence, you should instead add a zero to the beginning of your sequence of zeroes, then fill in new first values for each previous sequence.
+
+In particular, here is what the third example history looks like when extrapolating back in time:
+
+5  10  13  16  21  30  45
+  5   3   3   5   9  15
+   -2   0   2   4   6
+      2   2   2   2
+        0   0   0
+Adding the new values on the left side of each sequence from bottom to top eventually reveals the new left-most history value: 5.
+
+Doing this for the remaining example data above results in previous values of -3 for the first history and 0 for the second history. Adding all three new values together produces 2.
+
+Analyze your OASIS report again, this time extrapolating the previous value for each history. What is the sum of these extrapolated values?
+
+## Plan
+
+basically the same but need to add 0s to beginning instead of end. Will also make run concurrently using goRoutines
