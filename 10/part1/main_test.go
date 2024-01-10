@@ -11,7 +11,7 @@ func TestEvaluateScore(t *testing.T) {
 		{
 			name: "executeMain - test example input 1 - unused pipes not included",
 			input: `.....
-			.F-7.
+			.S-7.
 			.|.|.
 			.L-J.
 			.....`,
@@ -19,7 +19,7 @@ func TestEvaluateScore(t *testing.T) {
 		},
 		{
 			name: "executeMain - test example input 1 - unused pipes included",
-			input: `.-L|F7
+			input: `-L|F7
 			7S-7|
 			L|7||
 			-L-J|
