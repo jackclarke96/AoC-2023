@@ -1,7 +1,7 @@
 package main
 
-func NewPipeStart(i, j int, matrix [][]DirectionChanger) DirectionChanger {
-	startType := replaceStartPipe(i, j, matrix)
+func ConvertPipeStart(i, j int, grid [][]DirectionChanger) DirectionChanger {
+	startType := replaceStartPipe(i, j, grid)
 	switch startType {
 	case NS:
 		return NewPipeNS(i, j)
@@ -19,22 +19,40 @@ func NewPipeStart(i, j int, matrix [][]DirectionChanger) DirectionChanger {
 	return nil
 }
 
-func replaceStartPipe(i, j int, matrix [][]DirectionChanger) PipeType {
+/*
+ * Can work out S Pipe type by the values surrounding it.
+
+ * We know that:
+ 	* (1) each pipe in the loop has exactly 2 connecting pipes.
+
+	* (2) (a) For a pipe to connect to S from the North, it must have a South Direction change
+		* (b) For a pipe to connect to S from the East, it must have a West Direction change
+		* (c) For a pipe to connect to S from the South, it must have a North Direction change
+		* (d) For a pipe to connect to S from the West, it must have an East Direction change
+
+ * Assuming that only one loop is possible (e.g. can't have -S- as well as | above and beneath S) then we can assume only 2 statements from (2) can be true),
+   we can check each surrounding entry one by one and eliminate impossible values for S if the adjacent pipe is a possible connection
+   e.g. if we have grid[i][j-1] = F, then S cannot be |, L or F, and so on.
+
+   Repeating for each of North, East, South and West will leave only one possible value for S
+*/
+
+func replaceStartPipe(i, j int, grid [][]DirectionChanger) PipeType {
 
 	var pt PipeType
 	var northType, eastType, southType, westType PipeType
 
-	if i > 0 && matrix[i-1][j] != nil {
-		northType = matrix[i-1][j].GetPipe().Type
+	if i > 0 && grid[i-1][j] != nil {
+		northType = grid[i-1][j].GetPipe().Type
 	}
-	if j < len(matrix[0])-1 && matrix[i][j+1] != nil {
-		eastType = matrix[i][j+1].GetPipe().Type
+	if j < len(grid[0])-1 && grid[i][j+1] != nil {
+		eastType = grid[i][j+1].GetPipe().Type
 	}
-	if i < len(matrix)-1 && matrix[i+1][j] != nil {
-		southType = matrix[i+1][j].GetPipe().Type
+	if i < len(grid)-1 && grid[i+1][j] != nil {
+		southType = grid[i+1][j].GetPipe().Type
 	}
-	if j > 0 && matrix[i][j-1] != nil {
-		westType = matrix[i][j-1].GetPipe().Type
+	if j > 0 && grid[i][j-1] != nil {
+		westType = grid[i][j-1].GetPipe().Type
 	}
 
 	possibleTypes := map[PipeType]bool{

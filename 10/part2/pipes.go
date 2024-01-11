@@ -4,13 +4,7 @@ import (
 	"errors"
 )
 
-type Person struct {
-	currentDirection Direction
-	i, j             int
-}
-
-type Direction string
-type PipeType string
+/*---------------------------------- Basic Type Definitions ---------------------------------- */
 
 const (
 	North Direction = "north"
@@ -30,17 +24,19 @@ const (
 	START  PipeType = "S"
 )
 
+type Direction string
+type PipeType string
+
 type DirectionChanger interface {
 	NextDirection(currentDirection Direction) Direction
 	GetPipe() *Pipe
 }
 
 type Pipe struct {
-	i, j                              int
-	Type                              PipeType
-	Traversed                         bool
-	ForwardDistance, BackwardDistance int
-} // could add validMoves after traversed
+	i, j      int
+	Type      PipeType
+	Traversed bool
+}
 
 type PipeNS struct{ Pipe }
 type PipeEW struct{ Pipe }
@@ -50,33 +46,62 @@ type PipeSW struct{ Pipe }
 type PipeSE struct{ Pipe }
 type PipeStart struct{ Pipe }
 
+/*--------------------------------- Pipe Constructor Functions --------------------------------- */
+
+func NewPipeNS(i, j int) *PipeNS {
+	return &PipeNS{Pipe{i, j, NS, false}}
+}
+
+// Return pointer to the pipes so that underlying values can be accessed
+func NewPipeEW(i, j int) *PipeEW {
+	return &PipeEW{Pipe{i, j, EW, false}}
+}
+
+func NewPipeNE(i, j int) *PipeNE {
+	return &PipeNE{Pipe{i, j, NE, false}}
+}
+
+func NewPipeNW(i, j int) *PipeNW {
+	return &PipeNW{Pipe{i, j, NW, false}}
+}
+
+func NewPipeSW(i, j int) *PipeSW {
+	return &PipeSW{Pipe{i, j, SW, false}}
+}
+
+func NewPipeSE(i, j int) *PipeSE {
+	return &PipeSE{Pipe{i, j, SE, false}}
+}
+
+func NewPipeStart(i, j int) *PipeStart {
+	return &PipeStart{Pipe{i, j, START, false}}
+}
+
+func (p PipeStart) NextDirection(currentDirection Direction) Direction {
+	return North // doesn't really matter as this will change when we edit S to be a proper pipe
+}
+
+/*--------------------------------------- Getter for Pipes --------------------------------------- */
+
+/*
+When we store a value (or a pointer) in an interface, the interface holds a copy of that value (or a pointer).
+when you access a method on an interface, you're actually calling a method on the value that the interface holds.
+For example, grid[p.i][p.j] gives you a DirectionChanger interface. When we call pipe.Traversed,
+we attempt to access a field on the interface itself, not on the Pipe struct that the interface might be holding.
+This would result in a compilation error because Traversed is not a method or field of the DirectionChanger interface.
+
+If DirectionChanger holds a pointer to a Pipe, we need a way to access that pointer.
+This is what GetPipe() does. It returns the pointer to the Pipe struct that the interface is holding.
+Without GetPipe(), you don't have a direct way to access the Pipe pointer from the interface.
+
+This is why we cant use &pipe.Traversed or pipe.traversed
+*/
+
 func (p *Pipe) GetPipe() *Pipe {
 	return p
 }
 
-func NewPipeNS(i, j int) *PipeNS {
-	return &PipeNS{Pipe{i, j, NS, false, 0, 0}}
-}
-
-func NewPipeEW(i, j int) *PipeEW {
-	return &PipeEW{Pipe{i, j, EW, false, 0, 0}}
-}
-
-func NewPipeNE(i, j int) *PipeNE {
-	return &PipeNE{Pipe{i, j, NE, false, 0, 0}}
-}
-
-func NewPipeNW(i, j int) *PipeNW {
-	return &PipeNW{Pipe{i, j, NW, false, 0, 0}}
-}
-
-func NewPipeSW(i, j int) *PipeSW {
-	return &PipeSW{Pipe{i, j, SW, false, 0, 0}}
-}
-
-func NewPipeSE(i, j int) *PipeSE {
-	return &PipeSE{Pipe{i, j, SE, false, 0, 0}}
-}
+/*-------------------------- NextDirection Functions For each PipeType -------------------------- */
 
 func (p PipeNS) NextDirection(currentDirection Direction) Direction {
 	if currentDirection == North {
@@ -120,6 +145,7 @@ func (p PipeSE) NextDirection(currentDirection Direction) Direction {
 	return South
 }
 
+// Orchestrator to invoke constructors of different Pipes
 func generatePipeStruct(pt PipeType, i, j int) (DirectionChanger, error) {
 	switch pt {
 	case NS:
@@ -134,7 +160,9 @@ func generatePipeStruct(pt PipeType, i, j int) (DirectionChanger, error) {
 		return NewPipeSW(i, j), nil
 	case SE:
 		return NewPipeSE(i, j), nil
-	case GROUND: // Ground and Starting Position
+	case START:
+		return NewPipeStart(i, j), nil
+	case GROUND:
 		return nil, nil
 	default:
 		return nil, errors.New("Could not generate DirectionChanger due to unexpected PipeType")

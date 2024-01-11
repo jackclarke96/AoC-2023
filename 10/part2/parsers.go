@@ -5,33 +5,41 @@ import (
 	"strings"
 )
 
-func parseInputToStructMatrix(s string) ([][]DirectionChanger, int, int) {
+// Parse string input into 2d slice of DirectionChanger interface representing the grid of pipes
+func parseInputToStructGrid(s string) [][]DirectionChanger {
+
+	// initialise grid
 	ss := strings.Split(s, "\n")
 	height := len(ss)
 	width := len(strings.TrimSpace(ss[0]))
-	var iStart, jStart int
-	matrix := make([][]DirectionChanger, height) // surround matrix with nil values incase the border is around the outside
-	for i := range matrix {
-		matrix[i] = make([]DirectionChanger, width)
+	grid := make([][]DirectionChanger, height)
+	for i := range grid {
+		grid[i] = make([]DirectionChanger, width)
 	}
 
-	for i := range matrix {
+	// fill grid with Pipe Structs
+	for i := range grid {
 		str := strings.TrimSpace(ss[i])
-		for j := range matrix[i] {
+		for j := range grid[i] {
 			pt := PipeType(str[j])
-			if pt == START {
-				iStart, jStart = i, j
-				continue
-			}
 			p, err := generatePipeStruct(pt, i, j)
 			if err != nil {
 				log.Fatalf("Could not parse input into matrix: %v", err)
 			}
-			matrix[i][j] = p
+			grid[i][j] = p
 		}
 	}
-	p := NewPipeStart(iStart, jStart, matrix)
-	matrix[iStart][jStart] = p
+	return grid
+}
 
-	return matrix, iStart, jStart
+// Get start co ordinates for traversal of Grid by finding S co ords
+func getStartCoords(grid [][]DirectionChanger) (int, int) {
+	for i, row := range grid {
+		for j, cell := range row {
+			if cell != nil && cell.GetPipe().Type == START {
+				return i, j
+			}
+		}
+	}
+	return -1, -1
 }
