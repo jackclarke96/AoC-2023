@@ -1,20 +1,20 @@
 package main
 
-func ConvertPipeStart(i, j int, grid [][]DirectionChanger) DirectionChanger {
+func convertPipeStart(i, j int, grid [][]directionChanger) directionChanger {
 	startType := replaceStartPipe(i, j, grid)
 	switch startType {
 	case NS:
-		return NewPipeNS(i, j)
+		return newPipeNS(i, j)
 	case EW:
-		return NewPipeEW(i, j)
+		return newPipeEW(i, j)
 	case NE:
-		return NewPipeNE(i, j)
+		return newPipeNE(i, j)
 	case NW:
-		return NewPipeNW(i, j)
+		return newPipeNW(i, j)
 	case SW:
-		return NewPipeSW(i, j)
+		return newPipeSW(i, j)
 	case SE:
-		return NewPipeSE(i, j)
+		return newPipeSE(i, j)
 	}
 	return nil
 }
@@ -37,25 +37,25 @@ func ConvertPipeStart(i, j int, grid [][]DirectionChanger) DirectionChanger {
    Repeating for each of North, East, South and West will leave only one possible value for S
 */
 
-func replaceStartPipe(i, j int, grid [][]DirectionChanger) PipeType {
+func replaceStartPipe(i, j int, grid [][]directionChanger) pipeType {
 
-	var pt PipeType
-	var northType, eastType, southType, westType PipeType
+	var pt pipeType
+	var northType, eastType, southType, westType pipeType
 
 	if i > 0 && grid[i-1][j] != nil {
-		northType = grid[i-1][j].GetPipe().Type
+		northType = grid[i-1][j].getPipe().Type
 	}
 	if j < len(grid[0])-1 && grid[i][j+1] != nil {
-		eastType = grid[i][j+1].GetPipe().Type
+		eastType = grid[i][j+1].getPipe().Type
 	}
 	if i < len(grid)-1 && grid[i+1][j] != nil {
-		southType = grid[i+1][j].GetPipe().Type
+		southType = grid[i+1][j].getPipe().Type
 	}
 	if j > 0 && grid[i][j-1] != nil {
-		westType = grid[i][j-1].GetPipe().Type
+		westType = grid[i][j-1].getPipe().Type
 	}
 
-	possibleTypes := map[PipeType]bool{
+	possibleTypes := map[pipeType]bool{
 		NS: true,
 		NW: true,
 		NE: true,
