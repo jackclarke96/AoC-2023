@@ -2,11 +2,6 @@ package main
 
 import "testing"
 
-var s2f = `soil-to-fertilizer map:
-0 15 37
-37 52 2
-39 0 15`
-
 func TestEvaluateScore(t *testing.T) {
 	testCases := []struct {
 		name     string
