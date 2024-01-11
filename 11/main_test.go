@@ -1,32 +1,55 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestEvaluateScore(t *testing.T) {
+var mainInput = `...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#.....`
+
+var expansionSizeMainTest1 = 1
+var expansionSizeMainTest2 = 9
+var expansionSizeMainTest3 = 99
+
+var horizontalMap, verticalMap, _ = expandGalaxy([]byte(mainInput), 10, 10, expansionSizeMainTest1)
+
+func TestExecuteMain(t *testing.T) {
 	testCases := []struct {
-		name     string
-		input    string
-		expected int
+		name          string
+		galaxyInput   string
+		expansionSize int
+		expected      int
 	}{
 		{
-			name: "executeMain - test example input",
-			input: `...#......
-			.......#..
-			#.........
-			..........
-			......#...
-			.#........
-			.........#
-			..........
-			.......#..
-			#...#.....
-			`,
-			expected: 374,
+			name:          "executeMain - expansionSize 1",
+			galaxyInput:   mainInput,
+			expansionSize: expansionSizeMainTest1,
+			expected:      374,
+		},
+		{
+			name:          "executeMain - expansionSize 10",
+			galaxyInput:   mainInput,
+			expansionSize: expansionSizeMainTest2,
+			expected:      1030,
+		},
+		{
+			name:          "executeMain - expansionSize 100",
+			galaxyInput:   mainInput,
+			expansionSize: expansionSizeMainTest3,
+			expected:      8410,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := executeMain(tc.input)
+			result := executeMain([]byte(tc.galaxyInput), tc.expansionSize)
 			if result != tc.expected {
 				t.Errorf("Failed %s: expected %v, got %v", tc.name, tc.expected, result)
 			}
@@ -45,8 +68,8 @@ func TestCalculateDistance(t *testing.T) {
 			input: calculationInput{
 				galaxyStruct{0, 3},
 				galaxyStruct{8, 7},
-				2,
-				2,
+				horizontalMap,
+				verticalMap,
 			},
 			expected: 15,
 		},
@@ -55,8 +78,8 @@ func TestCalculateDistance(t *testing.T) {
 			input: calculationInput{
 				galaxyStruct{2, 0},
 				galaxyStruct{6, 9},
-				1,
-				3,
+				horizontalMap,
+				verticalMap,
 			},
 			expected: 17,
 		},
@@ -65,8 +88,8 @@ func TestCalculateDistance(t *testing.T) {
 			input: calculationInput{
 				galaxyStruct{9, 0},
 				galaxyStruct{9, 4},
-				0,
-				1,
+				horizontalMap,
+				verticalMap,
 			},
 			expected: 5,
 		},

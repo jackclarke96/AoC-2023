@@ -88,26 +88,13 @@ In this example, after expanding the universe, the sum of the shortest path betw
 
 Expand the universe, then find the length of the shortest path between every pair of galaxies. What is the sum of these lengths?
 
-## Breaking this down
+--- Part Two ---
+The galaxies are much older (and thus much farther apart) than the researcher initially estimated.
 
-1. The growth part basically says For any empty row or column, insert a copy of that empty row or column directly beneath or to the right of it.
-2. shortest path is just steps down + steps across
+Now, instead of the expansion you did before, make each empty row or column one million times larger. That is, each empty row should be replaced with 1000000 empty rows, and each empty column should be replaced with 1000000 empty columns.
 
-* Can parse into a 2d slice (converting hashes to numbers), then add columns and rows in another iteration
-* Then, write, or use, a function to find all pairs of numbers 
-* Then ca;lculate distance
+(In the example above, if each empty row or column were merely 10 times larger, the sum of the shortest paths between every pair of galaxies would be 1030. If each empty row or column were merely 100 times larger, the sum of the shortest paths between every pair of galaxies would be 8410. However, your universe will need to expand far beyond these values.)
 
-## Data Structures 
+Starting with the same initial image, expand the universe according to these new rules, then find the length of the shortest path between every pair of galaxies. What is the sum of these lengths?
 
-Since already pretty confident with slices and iterating through them, I will use a map
 
-`jMap map[int]bool`
-`iMap map[int]jMap`
-
-Then store only the places in which there are actually galaxies.
-
-I could also store expansion rows and columns as maps of ints (1 = added column r row, 0 = havent), then loop through and add on the distance. or even, each row/column could store number of expansions til this point.
-
-Then i can just take the difference between number of expansions at start galaxy and number of expansions at end galaxy.
-
-This means i could actulaly use both i and j as a key for my initial bools
