@@ -24,16 +24,16 @@ func executeMain(s string) int {
 	iStart, jStart := getStartCoords(grid)
 
 	// Replace S with Pipe of correct directions
-	grid[iStart][jStart] = ConvertPipeStart(iStart, jStart, grid)
+	grid[iStart][jStart] = convertPipeStart(iStart, jStart, grid)
 
 	// Use replacement Pipe to calculate valid start direction
-	startDirection := grid[iStart][jStart].NextDirection(West)
+	startDirection := grid[iStart][jStart].nextDirection(West)
 
 	// Mark start point as traversed
-	grid[iStart][jStart].GetPipe().markTraversed()
+	grid[iStart][jStart].getPipe().markTraversed()
 
 	// Initialise person at start point
-	person := Person{startDirection, iStart, jStart}
+	person := person{startDirection, iStart, jStart}
 
 	// Traverse all the way back to the starting point to find all boundaries
 	person.traverseMap(grid)

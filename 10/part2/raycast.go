@@ -1,10 +1,10 @@
 package main
 
 // mark any untraversed pipes as nil to make comparisons in Raycast more simple.
-func markUntraversedAsNil(grid [][]DirectionChanger) {
+func markUntraversedAsNil(grid [][]directionChanger) {
 	for i := 0; i < len(grid); i++ {
 		for j := 0; j < len(grid[0]); j++ {
-			if grid[i][j] != nil && !grid[i][j].GetPipe().Traversed {
+			if grid[i][j] != nil && !grid[i][j].getPipe().Traversed {
 				grid[i][j] = nil
 			}
 		}
@@ -12,17 +12,17 @@ func markUntraversedAsNil(grid [][]DirectionChanger) {
 }
 
 // Perform RayCast Algorithm
-func rayCast(grid [][]DirectionChanger) int {
+func rayCast(grid [][]directionChanger) int {
 	inside := 0
 	for _, path := range grid {
 		boundariesCrossed := 0
-		boundary := []PipeType{}
+		boundary := []pipeType{}
 		for _, cell := range path {
 			if cell == nil {
 				if boundariesCrossed%2 == 1 {
 					inside += 1
 				}
-				boundary = []PipeType{}
+				boundary = []pipeType{}
 			} else {
 				boundary, boundariesCrossed = processBoundary(cell, boundary, boundariesCrossed)
 			}
@@ -37,16 +37,16 @@ func rayCast(grid [][]DirectionChanger) int {
 // | is always a boundary
 // - is never a boundary
 
-func processBoundary(cell DirectionChanger, boundary []PipeType, boundariesCrossed int) ([]PipeType, int) {
-	if cell.GetPipe().Type == NS {
+func processBoundary(cell directionChanger, boundary []pipeType, boundariesCrossed int) ([]pipeType, int) {
+	if cell.getPipe().Type == NS {
 		boundariesCrossed++
 	} else {
-		boundary = append(boundary, cell.GetPipe().Type)
+		boundary = append(boundary, cell.getPipe().Type)
 		if (boundary[0] == NE && boundary[len(boundary)-1] == SW) || (boundary[0] == SE && boundary[len(boundary)-1] == NW) {
 			boundariesCrossed++
-			boundary = []PipeType{}
+			boundary = []pipeType{}
 		} else if (boundary[0] == NE && boundary[len(boundary)-1] == NW) || (boundary[0] == SE && boundary[len(boundary)-1] == SW) {
-			boundary = []PipeType{}
+			boundary = []pipeType{}
 		}
 	}
 	return boundary, boundariesCrossed
