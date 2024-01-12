@@ -50,6 +50,19 @@ If we count the pair of hashes as a single space, and take away the gap that mus
 
 Or:
 
-Any length of hashes should actually be treated as a # and a . since the split is required.
+Any length of hashes should actually be treated as #s followed by a . since the split is required.
 
+So step 1 is to find any string of hashes of any of the defined lengths
 best way to deal with this?
+
+1. Work out what we know.
+
+Maybe it's best to treat as though everything is a question mark,, then remove combinations that do not fit what is passed?  No. This would require actually generating each combination
+
+e.g. more challenging ?###???????? 4,2,1. or  ?###???????? 4,2,1. or 
+
+?###?????????? 4,3,1
+
+then the first 3 hashes couldmake up a 4 OR they could make up a 3.
+
+Perhaps treat as 2 separate problems. #### and ### then multiple the results. Will start coding this and see how it goes
