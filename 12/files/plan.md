@@ -50,7 +50,7 @@ If we count the pair of hashes as a single space, and take away the gap that mus
 
 Or:
 
-Any length of hashes should actually be treated as #s followed by a . since the split is required.
+Any length of hashes should actually be treated as #s followed by a . since the split is required (unless in final position)
 
 So step 1 is to find any string of hashes of any of the defined lengths
 best way to deal with this?
