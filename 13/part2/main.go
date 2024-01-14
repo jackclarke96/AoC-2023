@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	input, err := os.ReadFile("./files/input.txt")
+	input, err := os.ReadFile("../files/input.txt")
 	if err != nil {
 		log.Fatalf("Error reading input file: %v", err)
 	}
@@ -31,10 +31,8 @@ func (g grid) getGridScore(horizontalWeight, verticalWeight int) int {
 
 func (g grid) getHorizontalReflectionLength() int {
 	for i := 0; i < len(g)-1; i++ {
-		if compareRows(g[i], g[i+1]) {
-			if g.checkForHorizontalSymmetry(i, i+1) {
-				return i + 1
-			}
+		if g.checkForHorizontalSymmetry(i, i+1) {
+			return i + 1
 		}
 	}
 	return 0
@@ -45,10 +43,12 @@ func (g grid) getVerticalReflectionLength() int {
 }
 
 func (g grid) checkForHorizontalSymmetry(iOneStart, iTwoStart int) bool {
+	differences := 0
 	for iOne, iTwo := iOneStart, iTwoStart; iOne >= 0 && iTwo < len(g); iOne, iTwo = iOne-1, iTwo+1 {
-		if !compareRows(g[iOne], g[iTwo]) {
+		differences += compareRows(g[iOne], g[iTwo])
+		if differences > 1 {
 			return false
 		}
 	}
-	return true
+	return differences == 1
 }
