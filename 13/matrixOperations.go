@@ -48,3 +48,12 @@ func (g grid) reflectInVerticalPlaneInPlace() grid {
 	}
 	return g
 }
+
+func compareRows(row1, row2 []int) bool {
+	for i := range row1 {
+		if row1[i] != row2[i] {
+			return false
+		}
+	}
+	return true
+}
