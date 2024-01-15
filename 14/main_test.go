@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -27,19 +26,8 @@ O..#.OO...
 #....###..
 #....#....`
 
-func generateGrid(stringGrid string) grid {
-	lines := strings.Split(stringGrid, "\n")
-	grid := make([][]string, len(lines))
-	for i, line := range lines {
-		chars := strings.Split(line, "")
-		grid[i] = chars
-	}
-	return grid
-}
-
 func compareColumnJ(grid1, grid2 grid, j int) bool {
 	for i := range grid1 {
-		// fmt.Println("grid1[i][j]", grid1[i][j], "grid2[i][j]", grid2[i][j])
 		if grid1[i][j] != grid2[i][j] {
 			return false
 		}
@@ -90,14 +78,16 @@ func TestTiltColumnNorth(t *testing.T) {
 	})
 }
 
-func TestOrchestrateTilt(t *testing.T) {
+func TestPerformTilt(t *testing.T) {
 	testGrid := generateGrid(testGridString)
+	tilted := generateGrid(tiltedNorthString)
 
-	t.Run("Gets correct score for test input", func(t *testing.T) {
-		expected := 136
-		result := testGrid.performTilt()
-		if result != expected {
-			t.Errorf("Failed Gets correct score for test input: expected %v, got %v", expected, result)
+	t.Run("Tilts the entire grid", func(t *testing.T) {
+		testGrid.performTilt()
+		for j := 0; j < len(testGrid[0]); j++ {
+			if !compareColumnJ(testGrid, tilted, j) {
+				t.Error("Tilted grid did not match expected grid for column", j)
+			}
 		}
 	})
 }
