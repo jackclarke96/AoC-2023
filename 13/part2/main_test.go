@@ -47,7 +47,7 @@ func TestExecuteMain(t *testing.T) {
 		expected int
 	}{
 		{
-			name:     "Transposes the baseGrid",
+			name:     "executeMain Gets correct total score for the two provided test grids",
 			input:    testGridsString,
 			expected: 400,
 		},
