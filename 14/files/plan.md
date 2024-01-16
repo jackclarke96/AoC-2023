@@ -64,3 +64,4 @@ The grid after 1,000,000,000 spins will match the grid whose:
 * index is between `startIndex` and `currentIndex`
 * index, when divided by `cycleLength`, has the same remainder as when 1,000,000,000 is divided by `cycleLength` (since adding on cycleLength repeatedly to it will give 1,000,000,000). Actually, should add one onto the index first to account for indexing starting at 0
 * i.e. when  `(cycleIndex+1)%cycleLength == offset` for `cycleIndex := startIndex; cycleIndex < currentIndex; cycleIndex++` and `offset := 1000000000 % cycleLength`
+
