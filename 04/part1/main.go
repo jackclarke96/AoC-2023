@@ -62,7 +62,7 @@ func (g gameNumbers) storeNumbers(s string) {
 
 func (g game) getGameOutcome() int {
 	wins := 0
-	for key, _ := range g.ourNumbers {
+	for key := range g.ourNumbers {
 		if g.winningNumbers[key] {
 			wins += 1
 		}

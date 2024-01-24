@@ -103,42 +103,42 @@ func (p pipeStart) nextDirection(currentDirection direction) direction {
 	return North // doesn't really matter as this will change when we edit S to be a proper pipe
 }
 
-func (p pipeNS) nextDirection(currentDirection direction) direction {
+func (p *pipeNS) nextDirection(currentDirection direction) direction {
 	if currentDirection == North { // person will continue north
 		return North
 	} // else they will continue south
 	return South
 }
 
-func (p pipeEW) nextDirection(currentDirection direction) direction {
+func (p *pipeEW) nextDirection(currentDirection direction) direction {
 	if currentDirection == East {
 		return East
 	}
 	return West
 }
 
-func (p pipeNE) nextDirection(currentDirection direction) direction {
+func (p *pipeNE) nextDirection(currentDirection direction) direction {
 	if currentDirection == South {
 		return East
 	}
 	return North
 }
 
-func (p pipeNW) nextDirection(currentDirection direction) direction {
+func (p *pipeNW) nextDirection(currentDirection direction) direction {
 	if currentDirection == South {
 		return West
 	}
 	return North
 }
 
-func (p pipeSW) nextDirection(currentDirection direction) direction {
+func (p *pipeSW) nextDirection(currentDirection direction) direction {
 	if currentDirection == North {
 		return West
 	}
 	return South
 }
 
-func (p pipeSE) nextDirection(currentDirection direction) direction {
+func (p *pipeSE) nextDirection(currentDirection direction) direction {
 	if currentDirection == North {
 		return East
 	}

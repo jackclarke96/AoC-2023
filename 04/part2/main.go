@@ -10,12 +10,12 @@ import (
 
 type gamesStringSlice []string
 type gameNumbers map[int]bool
-type game struct {
+type gameStruct struct {
 	winningNumbers gameNumbers
-	ourNumbers     gameNumbers
+	playerNumbers  gameNumbers
 	numberOfCards  int
 }
-type gamesSlice []game
+type gamesSlice []gameStruct
 
 func main() {
 	input, err := os.ReadFile("./files/input.txt")
@@ -40,12 +40,12 @@ func parseGames(input string) gamesSlice {
 	return games
 }
 
-func parseGame(card string) game {
+func parseGame(card string) gameStruct {
 	numbers := strings.Split(card, ":")[1]
 	numberSlice := strings.Split(numbers, "|")
 	winningNumbers := populateNumberMap(numberSlice[0])
 	ourNumbers := populateNumberMap(numberSlice[1])
-	return game{winningNumbers, ourNumbers, 1}
+	return gameStruct{winningNumbers, ourNumbers, 1}
 }
 
 func processGames(games gamesSlice) int {
@@ -61,6 +61,13 @@ func processGames(games gamesSlice) int {
 		index++
 	}
 	return total
+	// game := gameStruct{
+	// 	map[int]bool{41: true, 48: true, 83: true, 86: true, 17: true},
+	// 	map[int]bool{83: true, 86: true, 6: true, 31: true, 17: true, 9: true, 48: true, 53: true},
+	// 	1,
+	// }
+	// fmt.Println(game.getGameOutcome()) // 4
+	// return 2
 }
 
 func populateNumberMap(s string) gameNumbers {
@@ -77,9 +84,9 @@ func populateNumberMap(s string) gameNumbers {
 	return numbers
 }
 
-func (g game) getGameOutcome() int {
+func (g gameStruct) getGameOutcome() int {
 	wins := 0
-	for key, _ := range g.ourNumbers {
+	for key, _ := range g.playerNumbers {
 		if g.winningNumbers[key] {
 			wins++
 		}

@@ -25,58 +25,53 @@ var colourRegExp = regexp.MustCompile(`red|blue|green`)
 
 func main() {
 
-	problem, filePath := os.Args[1], os.Args[2]
+	filePath := os.Args[1]
 
-	if !(problem == "1" || problem == "2") {
-		log.Fatalf("Please provide number indicating which problem is to be solved")
-	}
-
-	total := executeMain(problem, filePath)
+	total := executeMain(filePath)
 
 	log.Println(total)
 }
 
-func executeMain(problem string, filePath string) int {
-	total := 0
+func executeMain(filePath string) int {
+
 	input, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Failed to read input file.")
 	}
 
+	total := 0
 	chunkSize := 10
 	inputSlice := strings.Split(string(input), "\n")
 	inputChunks := chunkSlice(inputSlice, chunkSize)
 
-	c := make(chan int)
+	// Create a channel to which each goRoutine can communicate scores achieved by its chunk of 10 games
+	gameScores := make(chan int)
 
-	for chunkNum, chunk := range inputChunks {
-		go processChunk(chunk, problem, chunkNum, chunkSize, c)
+	// Use a function literal with index of the chunk passed into it as a variable.
+	// This means each 'processChunk' gets its own copy of the index variable
+	for index := range inputChunks {
+		go func(i int) {
+			// pass the result of processChunk function into the gameScores channel
+			gameScores <- processChunk(inputChunks[i])
+		}(index)
 	}
 
+	// wait for each goroutine to send its computed score to the channel and then add it to the total.
 	for chanResponses := 0; chanResponses < len(inputChunks); chanResponses++ {
-		total += <-c
+		total += <-gameScores
 	}
 
 	return total
-
 }
 
-func processChunk(chunk []string, problem string, chunkNumber int, chunkSize int, c chan int) {
+func processChunk(chunk []string) int {
 	total := 0
-	for i, game := range chunk {
+	for _, game := range chunk {
 		numberMatch := numberRegexp.FindAllString(game, -1)[1:]
 		colourMatch := colourRegExp.FindAllString(game, -1)
-
-		if problem == "1" {
-			if checkGameValid(colourMatch, numberMatch) {
-				total += i + 1 + chunkNumber*chunkSize
-			}
-		} else {
-			total += getMaximumOfEachColour(colourMatch, numberMatch).getCubes()
-		}
-
+		total += getMaximumOfEachColour(colourMatch, numberMatch).getCubes()
 	}
-	c <- total
+	return total
 }
 
 func getMaximumOfEachColour(coloursDrawn []string, numberOfTimes []string) ColourCounts {

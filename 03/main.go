@@ -40,8 +40,9 @@ func main() {
 
 // makes main easier to test
 func executeProblem(engine, problem string) int {
-
+	fmt.Println(engine)
 	engineSlice := createMatrix(engine)
+	fmt.Println(engineSlice)
 	total := engineSlice.iterateThroughEngine(problem)
 	return total
 }
