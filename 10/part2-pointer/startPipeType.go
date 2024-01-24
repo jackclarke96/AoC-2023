@@ -1,6 +1,6 @@
 package main
 
-func convertPipeStart(i, j int, grid [][]directionChanger) directionChanger {
+func convertPipeStart(i, j int, grid [][]*directionChanger) directionChanger {
 	startType := replaceStartPipe(i, j, grid)
 	switch startType {
 	case NS:

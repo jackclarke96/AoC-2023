@@ -7,6 +7,5 @@ import (
 )
 
 func TestMain(t *testing.T) {
-	assert.Equal(t, executeMain("1", "../files/input.txt"), 2439)
-	assert.Equal(t, executeMain("2", "../files/input.txt"), 63711)
+	assert.Equal(t, executeMain("../files/input.txt"), 63711)
 }

@@ -49,7 +49,7 @@ Working backwards then, we can sub equations 1, 2, and 3 into equation 4, 5 and 
 
 1. For equation 4, we have, subbing x1 = x0 - 15 into f(x1), an equation for x2 in terms of x0:
 
-|      f(x1)      |         f(x0)          |
+|      f(x0)      |         f(x1)          |
 |-----------------|------------------------|
 |     x1          | x0 - 15                |
 | x1 - 48         | x0 - 48 - 15 = x0 - 63 |
@@ -60,7 +60,7 @@ Working backwards then, we can sub equations 1, 2, and 3 into equation 4, 5 and 
    * (1) For x2 = x1 - 63 we have:
       * x0min = 98, x0max = 99 from equation 1. 
       * From equation 4, When does x0 give us 15 <= x1 < 54? When 15 <= x0 - 48 < 54 i.e. when 63 <= x0 < 102.
-      * Combining, we use max(63,98) to get an overall minimum of 98. Similarly, for the max, min(99,102) => x1=98,x1 = 99
+      * Combining, we use max(63,98) to get an overall minimum of 98. Similarly, for the max, min(99,102) => x0=98,x0 = 99
 
    * (2) x2 = x0 - 13:
       * with x0Min = 50, x0Max = 97 from equation 2. 
@@ -116,18 +116,18 @@ We will represent this using a slice of structs, ordered by x1Min
 ```
 {
    transform: 0
-   x1Min: nil
-   x1Max: 49
+   x0Min: 0
+   x0Max: 49
 }
 {
    transform: 2
-   x1Min: 50
-   x1Max: 97
+   x0Min: 50
+   x0Max: 97
 }
 {
    transform: -48
-   x1Min: 98
-   x1Max: nil
+   x0Min: 98
+   x0Max:  math.MaxInt
 },
 ```
 
