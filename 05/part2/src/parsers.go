@@ -23,7 +23,7 @@ func ParseInputRanges(inputString string) ([]inputRange, error) {
 		return nil, err
 	}
 
-	// Convert each pair  of inyd into an InputRange struct with a lower and upper bound
+	// Convert each pair of ints into an InputRange struct with a lower and upper bound
 	for i := 0; i < len(inputSlice); i += 1 {
 		inputSlice[i] = generateInputRange(ints[2*i : 2*i+2])
 	}

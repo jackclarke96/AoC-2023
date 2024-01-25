@@ -135,7 +135,7 @@ Represent each layer like this.
 
 fx1, fx2, fx3, x4, fx5, fx6
 
-2. Then iterate through, and create fx2x1 = combined version, fx3x2x1, ... fx6x5x4x3x2x1 as described 4arlier.. Will have f(x6) in terms of x0 only. 
+2. Then iterate through, and create fx2x1 = combined version, fx3x2x1, ... fx6x5x4x3x2x1 as described earlier.. Will have f(x6) in terms of x0 only. 
 
 
 3. for each of the input ranges, intersect with the ranges for f(x6) in terms of x0. A range has values within another range if any of the following true:
@@ -144,8 +144,4 @@ fx1, fx2, fx3, x4, fx5, fx6
    (c) min and max both outside the range
 or conversely, if inputMin > maxInput or inputMax < minInput, then we know the sets are completely disjoint.
 If there is an intersection, then test the max of the combined mins
-
-
-
-
 

@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 var s2f = `soil-to-fertilizer map:
 0 15 37
@@ -8,14 +11,18 @@ var s2f = `soil-to-fertilizer map:
 39 0 15`
 
 func TestEvaluateScore(t *testing.T) {
+	testInput, err := os.ReadFile("../files/input.txt")
+	if err != nil {
+		t.Errorf("failed to read input.txt file: %v", err)
+	}
+
 	testCases := []struct {
 		name     string
 		input    string
-		problem  string
 		expected int
 	}{
 		{
-			name: "Part 1 - 0 winning cards",
+			name: "Part 2 - test input",
 			input: `seeds: 79 14 55 13
 
 			seed-to-soil map:
@@ -49,8 +56,12 @@ func TestEvaluateScore(t *testing.T) {
 			humidity-to-location map:
 			60 56 37
 			56 93 4`,
-			problem:  "1",
 			expected: 46,
+		},
+		{
+			name:     "Part 2 - real input",
+			input:    string(testInput),
+			expected: 108956227,
 		},
 	}
 	for _, tc := range testCases {
