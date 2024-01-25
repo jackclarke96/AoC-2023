@@ -86,6 +86,8 @@ So overall we get:
 
 After this, intersect the input ranges with the ranges for the fully composed piecewise function of layer 6. The composed functions are **always** of the form x6 = x0 + a, where a is a constant. This means testing only the lowest possible value of in the intersection is necessary. 
 
+Maximum one input value per piecewise equation in the final composed map.
+
 We will then be able to see the lowest possible value outputted by the map.
 
 ### Algorithm PseudoCode:
@@ -100,38 +102,43 @@ seed-to-soil map:
 
 gives, using 
 
-x2 = x1 + col1 - col2     for col2 <= x1 <= col2 + col3 - 1
+x1= x0 + col1 - col2     for col2 <= x0 <= col2 + col3 - 1
 
 ```
 f(x1) = {
-   x2 = x1 - 48:           98 <= x1
-   x2 = x1 + 2:            50 <= x1 <= 97
-   x2 = x1:                x1 <= 49
+   x1 = x0 - 48:           98 <= x0 <= 99
+   x1 = x0 + 2:            50 <= x0 <= 97
+   x1 = x0:                0  <= x0 <= 49
 }
 ```
 
-We will represent this using a slice of structs, ordered by x1Min
+We will represent this using a slice of structs, ordered by x0Min
 
 
 ```
 {
    transform: 0
-   x1Min: nil
-   x1Max: 49
+   x0Min: 0
+   x0Max: 49
 }
 {
    transform: 2
-   x1Min: 50
-   x1Max: 97
+   x0Min: 50
+   x0Max: 97
 }
 {
    transform: -48
-   x1Min: 98
-   x1Max: nil
+   x0Min: 98
+   x0Max: 99
 },
+{
+   transform: 0
+   x0Min: 100
+   x0Max: math.MaxInt
+}
 ```
 
-Represent each layer like this.
+where we add new boundaries to account for unknown max value in proper input. Represent each layer like this.
 
 fx1, fx2, fx3, x4, fx5, fx6
 
@@ -142,6 +149,7 @@ fx1, fx2, fx3, x4, fx5, fx6
    (a) the min starts in the range
    (b) the max starts in the range
    (c) min and max both outside the range
+   
 or conversely, if inputMin > maxInput or inputMax < minInput, then we know the sets are completely disjoint.
 If there is an intersection, then test the max of the combined mins
 
