@@ -123,9 +123,6 @@ func performBinarySearch(input int, fm formattedMap) []int {
 			max = float64(guess - 1)
 		} else if fm[guess][1] <= input {
 			min = float64(guess + 1)
-		} else {
-			fmt.Println("whaaaaaaaa?")
-			break
 		}
 	}
 	return []int{}

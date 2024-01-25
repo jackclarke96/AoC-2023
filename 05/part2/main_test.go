@@ -55,7 +55,7 @@ func TestEvaluateScore(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := executeMain(tc.input)
+			result, _ := executeMain(tc.input)
 			if result != tc.expected {
 				t.Errorf("Failed %s: expected %v, got %v", tc.name, tc.expected, result)
 			}
