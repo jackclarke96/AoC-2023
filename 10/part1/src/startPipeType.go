@@ -1,22 +1,8 @@
 package main
 
-func convertPipeStart(i, j int, grid [][]directionChanger) directionChanger {
+func convertPipeStart(i, j int, grid *[][]directionChanger) directionChanger {
 	startType := replaceStartPipe(i, j, grid)
-	switch startType {
-	case NS:
-		return newPipeNS(i, j)
-	case EW:
-		return newPipeEW(i, j)
-	case NE:
-		return newPipeNE(i, j)
-	case NW:
-		return newPipeNW(i, j)
-	case SW:
-		return newPipeSW(i, j)
-	case SE:
-		return newPipeSE(i, j)
-	}
-	return nil
+	return generatePipeStruct(startType)
 }
 
 /*
@@ -37,22 +23,29 @@ func convertPipeStart(i, j int, grid [][]directionChanger) directionChanger {
    Repeating for each of North, East, South and West will leave only one possible value for S
 */
 
-func replaceStartPipe(i, j int, grid [][]directionChanger) pipeType {
+func replaceStartPipe(i, j int, grid *[][]directionChanger) pipeType {
 
 	var pt pipeType
 	var northType, eastType, southType, westType pipeType
 
-	if i > 0 && grid[i-1][j] != nil {
-		northType = grid[i-1][j].getPipe().Type
+	// Get type of pipe directly north
+	if i > 0 && (*grid)[i-1][j] != nil {
+		northType = (*grid)[i-1][j].getPipe().pipeType
 	}
-	if j < len(grid[0])-1 && grid[i][j+1] != nil {
-		eastType = grid[i][j+1].getPipe().Type
+
+	// Get type of pipe directly east
+	if j < len((*grid)[0])-1 && (*grid)[i][j+1] != nil {
+		eastType = (*grid)[i][j+1].getPipe().pipeType
 	}
-	if i < len(grid)-1 && grid[i+1][j] != nil {
-		southType = grid[i+1][j].getPipe().Type
+
+	// Get type of pipe south south
+	if i < len(*grid)-1 && (*grid)[i+1][j] != nil {
+		southType = (*grid)[i+1][j].getPipe().pipeType
 	}
-	if j > 0 && grid[i][j-1] != nil {
-		westType = grid[i][j-1].getPipe().Type
+
+	// Get type of pipe directly west
+	if j > 0 && (*grid)[i][j-1] != nil {
+		westType = (*grid)[i][j-1].getPipe().pipeType
 	}
 
 	possibleTypes := map[pipeType]bool{
@@ -64,6 +57,8 @@ func replaceStartPipe(i, j int, grid [][]directionChanger) pipeType {
 		EW: true,
 	}
 
+	// Assuming there will be exactly 2 pipes leading into S, rule out possible types of S
+	// based on which S types could connect to the pipe leading into it.
 	if northType == SW || northType == SE || northType == NS {
 		possibleTypes[SW] = false
 		possibleTypes[SE] = false

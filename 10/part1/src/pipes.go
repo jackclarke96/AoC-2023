@@ -1,16 +1,12 @@
 package main
 
-import (
-	"errors"
-)
-
 /*---------------------------------- Basic Type Definitions ---------------------------------- */
 
 const (
-	North direction = "north"
-	East  direction = "east"
-	South direction = "south"
-	West  direction = "west"
+	north direction = "north"
+	east  direction = "east"
+	south direction = "south"
+	west  direction = "west"
 )
 
 const (
@@ -33,9 +29,8 @@ type directionChanger interface {
 }
 
 type pipe struct {
-	i, j      int
-	Type      pipeType
-	Traversed bool
+	pipeType  pipeType
+	traversed bool
 }
 
 type pipeNS struct{ pipe }
@@ -48,33 +43,26 @@ type pipeStart struct{ pipe }
 
 /*--------------------------------- Pipe Constructor Functions --------------------------------- */
 
-func newPipeNS(i, j int) *pipeNS {
-	return &pipeNS{pipe{i, j, NS, false}}
-}
-
-// Return pointer to the pipes so that underlying values can be accessed
-func newPipeEW(i, j int) *pipeEW {
-	return &pipeEW{pipe{i, j, EW, false}}
-}
-
-func newPipeNE(i, j int) *pipeNE {
-	return &pipeNE{pipe{i, j, NE, false}}
-}
-
-func newPipeNW(i, j int) *pipeNW {
-	return &pipeNW{pipe{i, j, NW, false}}
-}
-
-func newPipeSW(i, j int) *pipeSW {
-	return &pipeSW{pipe{i, j, SW, false}}
-}
-
-func newPipeSE(i, j int) *pipeSE {
-	return &pipeSE{pipe{i, j, SE, false}}
-}
-
-func newPipeStart(i, j int) *pipeStart {
-	return &pipeStart{pipe{i, j, START, false}}
+// Orchestrator to invoke constructors of different Pipes
+func generatePipeStruct(pt pipeType) directionChanger {
+	switch pt {
+	case NS:
+		return &pipeNS{pipe{NS, false}}
+	case EW:
+		return &pipeEW{pipe{EW, false}}
+	case NE:
+		return &pipeNE{pipe{NE, false}}
+	case NW:
+		return &pipeNW{pipe{NW, false}}
+	case SW:
+		return &pipeSW{pipe{SW, false}}
+	case SE:
+		return &pipeSE{pipe{SE, false}}
+	case START:
+		return &pipeStart{pipe{START, false}}
+	default: // must be ground
+		return nil
+	}
 }
 
 /*--------------------------------------- Getter for Pipes --------------------------------------- */
@@ -82,7 +70,7 @@ func newPipeStart(i, j int) *pipeStart {
 /*
 When we store a value (or a pointer) in an interface, the interface holds a copy of that value (or a pointer).
 when you access a method on an interface, you're actually calling a method on the value that the interface holds.
-For example, grid[p.i][p.j] gives you a directionChanger interface. When we call pipe.Traversed,
+For example, grid[p.i][p.j] gives you a directionChanger interface. When we call grid[p.i][p.j].Traversed,
 we attempt to access a field on the interface itself, not on the Pipe struct that the interface might be holding.
 This would result in a compilation error because Traversed is not a method or field of the directionChanger interface.
 
@@ -99,72 +87,50 @@ func (p *pipe) getPipe() *pipe {
 
 /*-------------------------- NextDirection Functions For each pipeType -------------------------- */
 
+// These introduced to learn interfaces. Could just use a simple switch loop but below allows for polymorphism
+
 func (p pipeStart) nextDirection(currentDirection direction) direction {
-	return North // doesn't really matter as this will change when we edit S to be a proper pipe
+	return north // doesn't really matter as this will change when we edit S to be a proper pipe
 }
 
 func (p pipeNS) nextDirection(currentDirection direction) direction {
-	if currentDirection == North {
-		return North
+	if currentDirection == north {
+		return north
 	}
-	return South
+	return south
 }
 
 func (p pipeEW) nextDirection(currentDirection direction) direction {
-	if currentDirection == East {
-		return East
+	if currentDirection == east {
+		return east
 	}
-	return West
+	return west
 }
 
 func (p pipeNE) nextDirection(currentDirection direction) direction {
-	if currentDirection == South {
-		return East
+	if currentDirection == south {
+		return east
 	}
-	return North
+	return north
 }
 
 func (p pipeNW) nextDirection(currentDirection direction) direction {
-	if currentDirection == South {
-		return West
+	if currentDirection == south {
+		return west
 	}
-	return North
+	return north
 }
 
 func (p pipeSW) nextDirection(currentDirection direction) direction {
-	if currentDirection == North {
-		return West
+	if currentDirection == north {
+		return west
 	}
-	return South
+	return south
 }
 
 func (p pipeSE) nextDirection(currentDirection direction) direction {
-	if currentDirection == North {
-		return East
+	if currentDirection == north {
+		return east
 	}
-	return South
-}
-
-// Orchestrator to invoke constructors of different Pipes
-func generatePipeStruct(pt pipeType, i, j int) (directionChanger, error) {
-	switch pt {
-	case NS:
-		return newPipeNS(i, j), nil
-	case EW:
-		return newPipeEW(i, j), nil
-	case NE:
-		return newPipeNE(i, j), nil
-	case NW:
-		return newPipeNW(i, j), nil
-	case SW:
-		return newPipeSW(i, j), nil
-	case SE:
-		return newPipeSE(i, j), nil
-	case START:
-		return newPipeStart(i, j), nil
-	case GROUND:
-		return nil, nil
-	default:
-		return nil, errors.New("Could not generate directionChanger due to unexpected pipeType")
-	}
+	return south
 }

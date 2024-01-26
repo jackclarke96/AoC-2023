@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strings"
 )
 
@@ -22,24 +21,21 @@ func parseInputToStructGrid(s string) [][]directionChanger {
 		str := strings.TrimSpace(ss[i])
 		for j := range grid[i] {
 			pt := pipeType(str[j])
-			p, err := generatePipeStruct(pt, i, j)
-			if err != nil {
-				log.Fatalf("Could not parse input into matrix: %v", err)
-			}
+			p := generatePipeStruct(pt)
 			grid[i][j] = p
 		}
 	}
 	return grid
 }
 
-// Get start co ordinates for traversal of Grid by finding S co ords
-func getStartCoords(grid [][]directionChanger) (int, int) {
-	for i, row := range grid {
+// Get start co ordinates for traversal of Grid by finding S coords
+func getStartCoords(grid *[][]directionChanger) (int, int) {
+	for i, row := range *grid {
 		for j, cell := range row {
-			if cell != nil && cell.getPipe().Type == START {
+			if cell != nil && cell.getPipe().pipeType == START {
 				return i, j
 			}
 		}
 	}
-	return -1, -1
+	panic("START cell not found in grid")
 }

@@ -18,7 +18,7 @@ func main() {
 	fmt.Println(executeMain(string(file)))
 
 	elapsed := time.Since(start)
-	fmt.Printf("page took %s", elapsed)
+	fmt.Printf("Total runtime %s", elapsed)
 }
 
 func executeMain(fileStr string) (int, error) {

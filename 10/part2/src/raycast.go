@@ -4,7 +4,7 @@ package main
 func markUntraversedAsNil(grid [][]directionChanger) {
 	for i := 0; i < len(grid); i++ {
 		for j := 0; j < len(grid[0]); j++ {
-			if grid[i][j] != nil && !grid[i][j].getPipe().Traversed {
+			if grid[i][j] != nil && !grid[i][j].getPipe().traversed {
 				grid[i][j] = nil
 			}
 		}
@@ -12,9 +12,9 @@ func markUntraversedAsNil(grid [][]directionChanger) {
 }
 
 // Perform RayCast Algorithm
-func rayCast(grid [][]directionChanger) int {
+func rayCast(grid *[][]directionChanger) int {
 	inside := 0
-	for _, path := range grid {
+	for _, path := range *grid {
 		boundariesCrossed := 0
 		boundary := []pipeType{}
 		for _, cell := range path {
@@ -24,6 +24,7 @@ func rayCast(grid [][]directionChanger) int {
 				}
 				boundary = []pipeType{}
 			} else {
+
 				boundary, boundariesCrossed = processBoundary(cell, boundary, boundariesCrossed)
 			}
 		}
@@ -38,13 +39,16 @@ func rayCast(grid [][]directionChanger) int {
 // - is never a boundary
 
 func processBoundary(cell directionChanger, boundary []pipeType, boundariesCrossed int) ([]pipeType, int) {
-	if cell.getPipe().Type == NS {
+	if cell.getPipe().pipeType == NS {
 		boundariesCrossed++
 	} else {
-		boundary = append(boundary, cell.getPipe().Type)
+		// keep track of potential boundary by appending to it
+		boundary = append(boundary, cell.getPipe().pipeType)
+		// handle L--7 or F----J. If we have this situation it counts as a boundary crossed
 		if (boundary[0] == NE && boundary[len(boundary)-1] == SW) || (boundary[0] == SE && boundary[len(boundary)-1] == NW) {
 			boundariesCrossed++
 			boundary = []pipeType{}
+			// handle L--J or F----7 If we have this situation it DOES NOT count as a boundary crossed
 		} else if (boundary[0] == NE && boundary[len(boundary)-1] == NW) || (boundary[0] == SE && boundary[len(boundary)-1] == SW) {
 			boundary = []pipeType{}
 		}
