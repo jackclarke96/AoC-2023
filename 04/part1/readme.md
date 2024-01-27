@@ -1,4 +1,5 @@
---- Day 4: Scratchcards ---
+# --- Day 4: Scratchcards ---
+
 The gondola takes you up. Strangely, though, the ground doesn't seem to be coming with you; you're not climbing a mountain. As the circle of Snow Island recedes below you, an entire new landmass suddenly appears above you! The gondola carries you to the surface of the new island and lurches into the station.
 
 As you exit the gondola, the first thing you notice is that the air here is much warmer than it was on Snow Island. It's also quite humid. Is this where the water source is?
@@ -15,20 +16,51 @@ As far as the Elf has been able to figure out, you have to figure out which of t
 
 For example:
 
+```
 Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
+```
+
 In the above example, card 1 has five winning numbers (41, 48, 83, 86, and 17) and eight numbers you have (83, 86, 6, 31, 17, 9, 48, and 53). Of the numbers you have, four of them (48, 83, 17, and 86) are winning numbers! That means card 1 is worth 8 points (1 for the first match, then doubled three times for each of the three matches after the first).
 
-Card 2 has two winning numbers (32 and 61), so it is worth 2 points.
-Card 3 has two winning numbers (1 and 21), so it is worth 2 points.
-Card 4 has one winning number (84), so it is worth 1 point.
-Card 5 has no winning numbers, so it is worth no points.
-Card 6 has no winning numbers, so it is worth no points.
+* Card 2 has two winning numbers (32 and 61), so it is worth 2 points.
+* Card 3 has two winning numbers (1 and 21), so it is worth 2 points.
+* Card 4 has one winning number (84), so it is worth 1 point.
+* Card 5 has no winning numbers, so it is worth no points.
+* Card 6 has no winning numbers, so it is worth no points.
+
 So, in this example, the Elf's pile of scratchcards is worth 13 points.
 
 Take a seat in the large pile of colorful cards. How many points are they worth in total?
+
+# Planned Solution 
+
+* Parse the cards into a slice of structs of the below format:
+
+```go
+type cardNumbers map[int]bool
+
+type cardStruct struct {
+	winningNumbers cardNumbers
+	playerNumbers  cardNumbers
+}
+
+type cardSlice []cardStruct
+```
+
+1. Split each string e.g. `Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53` into a set of `winningNumbers` and `playerNumbers`. These are both of type `map[int]bool`. 
+
+```go
+winningNumbers := cardNumbers{41: true, 48: true, 83: true, 86: true, 17: true}
+playerNumbers := cardNumbers{83: true, 86: true, 6: true, 31: true, 17: true, 9: true, 48: true, 53: true}
+```
+
+Maps provide O(1) lookup, so comparing the keys of each of the maps to find number of matches is efficient.
+
+2. Parse maps into a `cardStruct` and order into a `cardSlice` 
+3. Loop over the `cardSlice` and get the number of matches in each map, `n`. Take 2^(n-1) to get the points scored for that card and sum the points. Convert to an int to round 2^-1 to 0 automatically
 

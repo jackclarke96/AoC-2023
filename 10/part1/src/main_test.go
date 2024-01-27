@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestEvaluateScore(t *testing.T) {
+func TestExecuteMain(t *testing.T) {
 	testCases := []struct {
 		name     string
 		input    string
@@ -27,7 +27,7 @@ func TestEvaluateScore(t *testing.T) {
 			expected: 4,
 		},
 		{
-			name: "executeMain - test example input 2 - unused pipes included",
+			name: "executeMain - test example input 2 - unused pipes not included",
 			input: `..F7.
 			.FJ|.
 			SJ.L7

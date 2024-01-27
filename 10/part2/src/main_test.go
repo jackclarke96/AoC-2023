@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestEvaluateScore(t *testing.T) {
+func TestExecuteMain(t *testing.T) {
 	testCases := []struct {
 		name     string
 		input    string
