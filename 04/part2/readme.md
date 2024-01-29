@@ -41,7 +41,7 @@ We must:
 
 ## Data Structures
 
-Will update the cardStruct to track number of copies of each card
+Will update the `cardStruct` from [part 1](../part1/readme.md) to track the number of copies of each card
 ```go
 type cardStruct struct {
 	winningNumbers cardNumbers

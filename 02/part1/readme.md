@@ -35,7 +35,7 @@ Determine which games would have been possible if the bag had been loaded with o
 1. Create a struct `maxCounts` with the max possible value of each colour
 2. Load the input and split into a slice of length 100 based on `\n`
 3. For each element, create a slice of numbers `orderedNumbers` and a slice of colours `orderedColours` using `regExp.findAllStrings(element)`
-4. iterate through the colour slice. If `orderedNumbers[index] > `maxCounts[orderedColours[index]]` the game is impossible
+4. iterate through the colour slice. If `orderedNumbers[index] > maxCounts[orderedColours[index]]` the game is impossible
 5. Sum the IDs of valid games
 
 Since each game is processed in exactly the same way, will also use goroutines to process concurrently.

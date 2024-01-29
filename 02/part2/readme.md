@@ -34,6 +34,6 @@ For each game, find the minimum set of cubes that must have been present. What i
 
 The minimum number of each colour required for a game to be valid is the maximum number of drawn cubes for each colour.
 
-Use most of the logic from part 1, but replace the `isGameValid` function with a function that instead returns the maximum observed number of each colour in that game.
+Use most of the logic from [part 1](../part1/readme.md), but replace the `isGameValid` function with a function that instead returns the maximum observed number of each colour in that game.
 
 Then take the product of these values and sum this onto the total instead of the game ID.

@@ -143,11 +143,11 @@ otherwise, output = input
 
  So we can sort by and apply the search based on col2
 
- then apply the binary search
+ Then apply the binary search
 
  need: 
  1. A function to read the input and split into each map
- 2. a function to conver tte map into [][]int
+ 2. a function to convert the map into `[][]int`
  3. A function to reorder
  4. A binary search function to pass the inputs through 1 by 1
 

@@ -116,7 +116,7 @@ Figure out whether you have time to search for the nest by calculating the area 
 
 # Plan
 
-Use the code from part 1 to mark out the loop.
+Use the code from [part 1](../part1/readme.md) to mark out the loop.
 
 Then iterate through the matrix marking anything non-traversed as of `nil` type. 
 
