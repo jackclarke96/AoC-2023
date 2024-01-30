@@ -11,7 +11,7 @@ var s2f = `soil-to-fertilizer map:
 39 0 15`
 
 func TestExecuteMain(t *testing.T) {
-	testInput, err := os.ReadFile("../files/input.txt")
+	testInput, err := os.ReadFile("../input.txt")
 	if err != nil {
 		t.Errorf("failed to read input.txt file: %v", err)
 	}

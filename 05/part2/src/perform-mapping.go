@@ -24,20 +24,19 @@ func (pw piecewiseFunction) findMinimumOutput(inputs []int) (int, error) {
 // Use a binary search to efficiently pass inputs through the composed map
 func (orderedPiecewise piecewiseFunction) performMapping(input int) (int, error) {
 
-	min := float64(0)
-	max := float64(len(orderedPiecewise) - 1)
+	min, max := 0, len(orderedPiecewise)-1
 
 	for max >= min {
 		// guess that input falls within boundaries of the most central function of the ordereded set of piecewise functions
-		guess := int(math.Floor(0.5 * (max + min)))
+		guess := (max + min) / 2
 		if orderedPiecewise[guess].minInput <= input && input <= orderedPiecewise[guess].maxInput {
 			return input + orderedPiecewise[guess].transform, nil
 			// if input is smaller than lower boundary of our guess, the piecewise function immediately before the current guess becomes the upper bound
 		} else if input < orderedPiecewise[guess].minInput {
-			max = float64(guess - 1)
+			max = guess - 1
 			// if input is larger than than upper boundary of our guess, the piecewise function immediately after the current guess becomes the upper lower bound
 		} else if input > orderedPiecewise[guess].maxInput {
-			min = float64(guess + 1)
+			min = guess + 1
 		}
 	}
 	return 0, fmt.Errorf("Error performing binary search. Input %v did not fall in any ranges", input)
