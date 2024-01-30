@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 	"os"
 	"slices"
 	"strings"
@@ -13,7 +12,7 @@ type singleMap [][]int
 type combinedMaps []singleMap
 
 func main() {
-	file, err := os.ReadFile("./files/input.txt")
+	file, err := os.ReadFile("../input.txt")
 	if err != nil {
 		log.Fatalf("Failed to read input file at given path: %v", err)
 	}
@@ -61,16 +60,24 @@ Go back to step 2.
 */
 
 func performBinarySearch(input int, fm singleMap) []int {
-	min := float64(0)
-	max := float64(len(fm) - 1)
+	// Initialise min as first slice entry and max as final entry
+	min, max := 0, len(fm)-1
+
 	for max >= min {
-		guess := int(math.Floor(0.5 * (max + min)))
+		// Guess that our input falls in the range of the middle slice entry
+		guess := (max + min) / 2
+
 		if fm[guess][1] <= input && input < fm[guess][1]+fm[guess][2] {
+			// We guessed correctly
 			return fm[guess]
+
 		} else if fm[guess][1] > input {
-			max = float64(guess - 1)
+			// We guessed too high. New max is the entry before our guess
+			max = guess - 1
+
 		} else if fm[guess][1] <= input {
-			min = float64(guess + 1)
+			// We guessed too low. New min is the entry after our guess
+			min = guess + 1
 		}
 	}
 	return nil

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	start := time.Now()
-	file, err := os.ReadFile("./files/input.txt")
+	file, err := os.ReadFile("../input.txt")
 	if err != nil {
 		log.Fatalf("Failed to read the input file: %v", err)
 	}

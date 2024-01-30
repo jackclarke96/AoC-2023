@@ -16,6 +16,25 @@ type cardStruct struct {
 
 type cardSlice []cardStruct
 
+var cards = cardNumbers{
+	41: true,
+	48: true,
+	83: true,
+	86: true,
+	17: true,
+}
+
+var cards2 = cardNumbers{
+	83: true,
+	86: true,
+	6:  true,
+	31: true,
+	17: true,
+	9:  true,
+	48: true,
+	53: true,
+}
+
 func main() {
 	input, err := os.ReadFile("../input.txt")
 	if err != nil {
@@ -55,12 +74,18 @@ func processCards(cards cardSlice) int {
 }
 
 // Compare keys of playerNumbers map and winningNumbers map to get number of matches.
-func (c cardStruct) getNumberMatches() int {
+func (c cardStruct) getNumberMatchess() int {
 	matches := 0
 	for key := range c.playerNumbers {
 		if c.winningNumbers[key] {
 			matches++
 		}
 	}
+	return matches
+}
+
+func (c cardStruct) getNumberMatches() int {
+	matches := 0
+	// ...
 	return matches
 }
