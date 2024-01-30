@@ -74,18 +74,12 @@ func processCards(cards cardSlice) int {
 }
 
 // Compare keys of playerNumbers map and winningNumbers map to get number of matches.
-func (c cardStruct) getNumberMatchess() int {
+func (c cardStruct) getNumberMatches() int {
 	matches := 0
 	for key := range c.playerNumbers {
 		if c.winningNumbers[key] {
 			matches++
 		}
 	}
-	return matches
-}
-
-func (c cardStruct) getNumberMatches() int {
-	matches := 0
-	// ...
 	return matches
 }
