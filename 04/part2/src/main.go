@@ -1,0 +1,66 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+)
+
+type cardNumbers map[int]bool
+
+type cardStruct struct {
+	winningNumbers cardNumbers
+	playerNumbers  cardNumbers
+	numberOfCopies int
+}
+
+type cardSlice []cardStruct
+
+func main() {
+	input, err := os.ReadFile("../input.txt")
+	if err != nil {
+		log.Fatal("Failed to load input file with given path")
+	}
+	fmt.Println(executeMain(string(input)))
+}
+
+func executeMain(input string) int {
+	cards := parseInputIntoCardSlice(input)
+	return processCards(cards)
+}
+
+func processCards(cards cardSlice) int {
+	// 1 copy of each card to start with
+	total := len(cards)
+
+	for index := range cards {
+		// get matchesᵢ, the quantity of matching numbers on the card at the current index
+		matches := cards[index].getNumberMatches()
+
+		// get copiesᵢ, the number of copies of the card at the current index
+		copiesToAdd := cards[index].numberOfCopies
+
+		// We want to add copies to the next matchesᵢ cards unless we run out of cards to add copies to
+		maxCardIndex := min(index+matches, len(cards)-1)
+		for i := index + 1; i <= maxCardIndex; i++ {
+
+			// update the numberOfCopies field on each of the cardStructs
+			cards[i].numberOfCopies += copiesToAdd
+
+			// also update the overall total number of scratch cards
+			total += copiesToAdd
+		}
+	}
+	return total
+}
+
+// Compare keys of playerNumbers map and winningNumbers map to get number of matches.
+func (c cardStruct) getNumberMatches() int {
+	matches := 0
+	for key := range c.playerNumbers {
+		if c.winningNumbers[key] {
+			matches++
+		}
+	}
+	return matches
+}
