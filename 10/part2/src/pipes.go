@@ -134,3 +134,9 @@ func (p pipeSE) nextDirection(currentDirection direction) direction {
 	}
 	return south
 }
+
+// Pointer for Modification: Using a pointer receiver allows us to modify the Traversed field
+// of the actual Pipe instance in the grid, rather than a copy.
+func (p *pipe) markTraversed() {
+	p.traversed = true
+}

@@ -11,12 +11,12 @@ type person struct {
 // Understanding Slices: Passing 'grid' to this function passes a copy of the slice header,
 // but the underlying array it points to remains the same. Modifications to elements of the grid
 // (like marking pipes as traversed) will affect the original grid.
-func (p person) traverseMap(grid *[][]directionChanger) int {
+func (p person) traverseMap(grid [][]directionChanger) int {
 	steps := 0
 	for {
 		p.move()
 		steps++
-		pipe := (*grid)[p.i][p.j]
+		pipe := (grid)[p.i][p.j]
 		if pipe.getPipe().traversed {
 			break
 		}
@@ -30,9 +30,7 @@ func (p person) traverseMap(grid *[][]directionChanger) int {
 
 // Pointer for Modification: Using a pointer receiver allows us to modify the Traversed field
 // of the actual Pipe instance in the grid, rather than a copy.
-func (p *pipe) markTraversed() {
-	p.traversed = true
-}
+
 func (p *person) move() {
 	switch p.currentDirection {
 	case north:
