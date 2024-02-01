@@ -1,6 +1,6 @@
 package main
 
-func convertPipeStart(i, j int, grid *[][]directionChanger) directionChanger {
+func convertPipeStart(i, j int, grid [][]directionChanger) directionChanger {
 	startType := replaceStartPipe(i, j, grid)
 	return generatePipeStruct(startType)
 }
@@ -23,29 +23,29 @@ func convertPipeStart(i, j int, grid *[][]directionChanger) directionChanger {
    Repeating for each of North, East, South and West will leave only one possible value for S
 */
 
-func replaceStartPipe(i, j int, grid *[][]directionChanger) pipeType {
+func replaceStartPipe(i, j int, grid [][]directionChanger) pipeType {
 
 	var pt pipeType
 	var northType, eastType, southType, westType pipeType
 
 	// Get type of pipe directly north
-	if i > 0 && (*grid)[i-1][j] != nil {
-		northType = (*grid)[i-1][j].getPipe().pipeType
+	if i > 0 && (grid)[i-1][j] != nil {
+		northType = (grid)[i-1][j].getPipe().pipeType
 	}
 
 	// Get type of pipe directly east
-	if j < len((*grid)[0])-1 && (*grid)[i][j+1] != nil {
-		eastType = (*grid)[i][j+1].getPipe().pipeType
+	if j < len((grid)[0])-1 && (grid)[i][j+1] != nil {
+		eastType = (grid)[i][j+1].getPipe().pipeType
 	}
 
 	// Get type of pipe south south
-	if i < len(*grid)-1 && (*grid)[i+1][j] != nil {
-		southType = (*grid)[i+1][j].getPipe().pipeType
+	if i < len(grid)-1 && (grid)[i+1][j] != nil {
+		southType = (grid)[i+1][j].getPipe().pipeType
 	}
 
 	// Get type of pipe directly west
-	if j > 0 && (*grid)[i][j-1] != nil {
-		westType = (*grid)[i][j-1].getPipe().pipeType
+	if j > 0 && (grid)[i][j-1] != nil {
+		westType = (grid)[i][j-1].getPipe().pipeType
 	}
 
 	possibleTypes := map[pipeType]bool{

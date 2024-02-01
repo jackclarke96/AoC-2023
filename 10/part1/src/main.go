@@ -25,10 +25,10 @@ func executeMain(s string) int {
 	grid := parseInputToStructGrid(s)
 
 	// Find co-ords of S in grid
-	iStart, jStart := getStartCoords(&grid)
+	iStart, jStart := getStartCoords(grid)
 
 	// Replace S with Pipe of correct directions
-	grid[iStart][jStart] = convertPipeStart(iStart, jStart, &grid)
+	grid[iStart][jStart] = convertPipeStart(iStart, jStart, grid)
 
 	// Use replacement Pipe to calculate valid start direction
 	// Doesn't matter what input direction is here as a valid output direction will always be calculated
@@ -41,5 +41,5 @@ func executeMain(s string) int {
 	person := person{startDirection, iStart, jStart}
 
 	// Traverse all the way back to the starting point to find all boundaries
-	return person.traverseMap(&grid) / 2
+	return person.traverseMap(grid) / 2
 }

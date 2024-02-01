@@ -12,9 +12,9 @@ func markUntraversedAsNil(grid [][]directionChanger) {
 }
 
 // Perform RayCast Algorithm
-func rayCast(grid *[][]directionChanger) int {
+func rayCast(grid [][]directionChanger) int {
 	inside := 0
-	for _, path := range *grid {
+	for _, path := range grid {
 		boundariesCrossed := 0
 		boundary := []pipeType{}
 		for _, cell := range path {

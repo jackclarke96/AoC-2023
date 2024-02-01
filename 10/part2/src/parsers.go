@@ -29,8 +29,8 @@ func parseInputToStructGrid(s string) [][]directionChanger {
 }
 
 // Get start co ordinates for traversal of Grid by finding S coords
-func getStartCoords(grid *[][]directionChanger) (int, int) {
-	for i, row := range *grid {
+func getStartCoords(grid [][]directionChanger) (int, int) {
+	for i, row := range grid {
 		for j, cell := range row {
 			if cell != nil && cell.getPipe().pipeType == START {
 				return i, j
