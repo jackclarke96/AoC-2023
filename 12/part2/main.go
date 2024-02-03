@@ -4,28 +4,66 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 )
 
 func main() {
-	input, err := os.ReadFile("./files/input.txt")
+	input, err := os.ReadFile("../files/input.txt")
 	if err != nil {
 		log.Fatalf("Could not read input file: %v", err)
 	}
-	str := string(input)
-	rows := strings.Split(str, "\n")
+
+	fmt.Println(executeMain(string(input)))
+}
+
+func executeMain(s string) int {
+	rows := strings.Split(s, "\n")
+
 	total := 0
-	for _, row := range rows {
-		slice := strings.Split(row, " ")
-		springs, springLength := slice[0], slice[1]
-		springSlice := strings.Split(springs, "")
-		// springSlice = copySpringSlice(springSlice)
-		springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
-		// springLengths = copySpringLengthSlice(springLengths)
-		total += generateCombinations(springSlice, springLengths)
+	numCores := runtime.NumCPU()
+	numRowsPerCore := len(rows) / numCores
+	extraRows := len(rows) % numCores
+
+	totalChan := make(chan int, numCores) // Ensure the channel has enough buffer for all goroutines
+
+	startRow := 0
+	for i := 0; i < numCores; i++ {
+		endRow := startRow + numRowsPerCore
+		if i < extraRows { // Distribute any extra rows among the first few goroutines
+			endRow++
+		}
+
+		go func(start, end int) {
+			totalChan <- handleRows(rows[start:end])
+		}(startRow, endRow)
+
+		startRow = endRow
 	}
 
-	fmt.Println(total)
+	for i := 0; i < numCores; i++ {
+		total += <-totalChan
+	}
+	return total
+}
+
+func handleRows(rows []string) int {
+	total := 0
+	for i, row := range rows {
+		fmt.Println("handling row", i)
+		total += handleRow(row)
+	}
+	return total
+}
+
+func handleRow(row string) int {
+	slice := strings.Split(row, " ")
+	springs, springLength := slice[0], slice[1]
+	springSlice := strings.Split(springs, "")
+	springSlice = copySpringSlice(springSlice)
+	springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
+	springLengths = copySpringLengthSlice(springLengths)
+	return generateCombinations(springSlice, springLengths)
 }
 
 func generateCombinations(springString []string, springLengths []int) int {
