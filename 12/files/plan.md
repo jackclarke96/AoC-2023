@@ -66,3 +66,7 @@ e.g. more challenging ?###???????? 4,2,1. or  ?###???????? 4,2,1. or
 then the first 3 hashes couldmake up a 4 OR they could make up a 3.
 
 Perhaps treat as 2 separate problems. #### and ### then multiple the results. Will start coding this and see how it goes
+
+## Solving with DP
+
+* Base case: The base case is when we reach the end of the row. We can work forwards the first time and get a valid solution. We track the states we were in to get there as keys to work out whether they lead to a valid solution. then can call it early if so. 

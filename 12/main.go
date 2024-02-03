@@ -2,100 +2,98 @@ package main
 
 import (
 	"fmt"
-
-	"gonum.org/v1/gonum/stat/combin"
+	"log"
+	"os"
+	"strings"
 )
 
 func main() {
-
-}
-
-func executeMain(s string) int {
-	return 5
-}
-
-func getCombinations(s string, brokenOrder []int) int {
-	fmt.Println(s)
-	fmt.Println(generateSubstrSlice(brokenOrder))
-	combin.Binomial(5, 2)
-	return 5
-}
-
-func convertToSubstr(length int, addSpace bool) string {
-	if length <= 0 {
-		return ""
+	input, err := os.ReadFile("./files/input.txt")
+	if err != nil {
+		log.Fatalf("Could not read input file: %v", err)
 	}
-	str := ""
-	for i := 0; i < length; i++ {
-		str += "#"
+	str := string(input)
+	rows := strings.Split(str, "\n")
+	total := 0
+	for _, row := range rows {
+		slice := strings.Split(row, " ")
+		springs, springLength := slice[0], slice[1]
+		springSlice := strings.Split(springs, "")
+		// springSlice = copySpringSlice(springSlice)
+		springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
+		// springLengths = copySpringLengthSlice(springLengths)
+		total += generateCombinations(springSlice, springLengths)
 	}
-	if addSpace {
-		str += "."
-	}
-	return str
+
+	fmt.Println(total)
 }
 
-type damagedSpringGroup map[int]string
+func generateCombinations(springString []string, springLengths []int) int {
+	questionMarkIndices := findQuestionMarkIndices(springString)
+	iMaxStart := calculateIMax(springString, springLengths)
 
-func generateSubstrSlice(brokenOrder []int) damagedSpringGroup {
-	mapping := make(damagedSpringGroup, len(brokenOrder))
-	for i, val := range brokenOrder {
-		if i == len(brokenOrder)-1 {
-			mapping[i] = convertToSubstr(val, false)
-		} else {
-			mapping[i] = convertToSubstr(val, true)
+	total := 0
+	var closure func(depth int)
+
+	closure = func(depth int) {
+		if depth == len(questionMarkIndices) {
+			total += isValidCombination(springLengths, springString, iMaxStart)
+			return
+		}
+		for _, elem := range []string{".", "#"} {
+			springString[questionMarkIndices[depth]] = elem
+			if !isValidPartial(springLengths, springString[:depth+1], iMaxStart) {
+				return
+			}
+			closure(depth + 1)
 		}
 	}
-	return mapping
+	closure(0)
+	return total
 }
 
-// plan. Find string slices that MUST go somewhere then remove that part of the string.
-// after that, use combinatorics
+func isValidCombination(springLengths []int, combination []string, iMax int) int {
+	i := 0
+	j := 0
 
-/*
-????.######..#####. 4,1,1 answer iks 4
-[#. ######. #####] ===> we must have *#.*######.*#####* and our string is of length 18. We have a string of length2, a string of length 7, and a string of length 5 = 14 spaces spoken for.
+	for i <= iMax {
+		// fmt.Println("i = ", i)
+		// fmt.Println("iMax = ", iMax)
+		if combination[i] == "#" {
 
+			// extract elements starting at first # and finishing
+			if !checkAllCharactersHash(combination[i : i+springLengths[j]]) {
+				return 0
+			}
+			// If we are placing anything other than the final set of #s, check for dot following it
+			if j < len(springLengths)-1 && !checkCharacterIsDot(combination[i+springLengths[j]]) {
+				return 0
+			}
 
-I could create my string #.######.##### of length 14, then insert '.'s into *#.*######.*#####*
-But then we know that string[17] is a dot.
-We also know that string[11] and string[10] are dots Can i use this?
+			// fmt.Println(iMax)
+			iMax = recalculateIMax(iMax, j, springLengths)
+			i += springLengths[j] - 1
+			j++
 
-If i replace every . that follows immediately after with another symbol, does that simplify things? since these absolutely have to be there.
+			if j == len(springLengths) {
+				// We have reached end of our combination. Check remaining strings are all "."
+				if !checkNoMoreHashes(i, combination) {
+					return 0
+				}
+				return 1
+			}
 
-I could create a chain of some sort [wildcard1, "#.", wildcard2, "######.", wildcard3, "#####", wildcard4].
-This will always be of length 2x(number of contiguous groups of damaged springs) + 1.
-The number of wildcards is number of contiguous groups of damaged springs + 1,
-and the number of dots to fit in those wildcards is length strLength - (number of damaged springs + number of contiguous groups of damaged springs -1)
+		}
+		i++
+	}
+	return 0
+}
 
-if we have a string of length 18, with four wildcards, filling in the wildcards gives
+func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) int {
+	// we will never have to deal with what comes after final placement so always use + 1
+	return currentMax + springLengths[springLengthsIndex] + 1
+}
 
-then fill in the wildcards we know to create a slice. How though???
-
-[wildcard1, "#.", wildcard2, "######.", wildcard3, "#####", "wildcard4""]
-
-fill in the wild cards with
-
-????.######..#####.
-[]
-*/
-
-/*
-?###???????? with 3,2,1
-
-*###.*##.*#*
-
-String has length 12.
-
-8 spaces spoken for by ###., ##., #
-
-4 spaces in which we must distribute 4 "."s, AND  index 1,2,3 all hashes.
-
-Do we just insert the .s?  how many combinations would we need to try
-
-Breaking replacements into cases:
-* When replacing a ? before a #:
-	* If we replace with a # we get a string of length 1+length 0f #s
-	* If we
-	Could split the actual string on dots too
-*/
+func calculateIMax(springString []string, springLengths []int) int {
+	return len(springString) - (sum(springLengths) + len(springLengths) - 1)
+}
