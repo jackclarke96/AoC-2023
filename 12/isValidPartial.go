@@ -1,14 +1,15 @@
 package main
 
 func isValidPartial(springLengths []int, partial []string, iMax int) bool {
-	// fmt.Println(partial)
 
 	i := 0
 	j := 0
 
 	for i <= min(iMax, len(partial)-1) {
 		if partial[i] == "#" {
-
+			if j == len(springLengths) {
+				return false
+			}
 			// extract elements starting at first # and finishing
 			iEnd := min(i+springLengths[j], len(partial)-1)
 			if iEnd == i+springLengths[j] {

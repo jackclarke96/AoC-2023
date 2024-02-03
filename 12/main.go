@@ -45,6 +45,7 @@ func generateCombinations(springString []string, springLengths []int) int {
 			if !isValidPartial(springLengths, springString[:depth+1], iMaxStart) {
 				return
 			}
+
 			closure(depth + 1)
 		}
 	}
@@ -57,11 +58,8 @@ func isValidCombination(springLengths []int, combination []string, iMax int) int
 	j := 0
 
 	for i <= iMax {
-		// fmt.Println("i = ", i)
-		// fmt.Println("iMax = ", iMax)
 		if combination[i] == "#" {
 
-			// extract elements starting at first # and finishing
 			if !checkAllCharactersHash(combination[i : i+springLengths[j]]) {
 				return 0
 			}
@@ -70,7 +68,6 @@ func isValidCombination(springLengths []int, combination []string, iMax int) int
 				return 0
 			}
 
-			// fmt.Println(iMax)
 			iMax = recalculateIMax(iMax, j, springLengths)
 			i += springLengths[j] - 1
 			j++
