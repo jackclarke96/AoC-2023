@@ -26,13 +26,6 @@ func checkNoMoreHashes(i int, s []string) bool {
 	return true
 }
 
-func modifySpringLengthsToAccountForGap(springLengths []int) []int {
-	for i := 0; i < len(springLengths)-1; i++ {
-		springLengths[i]++
-	}
-	return springLengths
-}
-
 func convertSliceStringToInt(slice []string) ([]int, error) {
 	intSlice := make([]int, len(slice))
 	for i, str := range slice {
@@ -67,6 +60,16 @@ func findQuestionMarkIndices(slice []string) []int {
 	for i, elem := range slice {
 		if elem == "?" {
 			indices = append(indices, i)
+		}
+	}
+	return indices
+}
+
+func findQuestionMarkIndicesMap(slice []string) map[int]bool {
+	indices := map[int]bool{}
+	for i, elem := range slice {
+		if elem == "?" {
+			indices[i] = true
 		}
 	}
 	return indices

@@ -6,15 +6,21 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func main() {
+	start := time.Now() // Start timing
+
 	input, err := os.ReadFile("../files/input.txt")
 	if err != nil {
 		log.Fatalf("Could not read input file: %v", err)
 	}
 
 	fmt.Println(executeMain(string(input)))
+
+	elapsed := time.Since(start) // Calculate elapsed time
+	fmt.Printf("Execution took %s\n", elapsed)
 }
 
 func executeMain(s string) int {
@@ -49,8 +55,8 @@ func executeMain(s string) int {
 
 func handleRows(rows []string) int {
 	total := 0
-	for i, row := range rows {
-		fmt.Println("handling row", i)
+	for _, row := range rows {
+		// fmt.Println("handling row", i)
 		total += handleRow(row)
 	}
 	return total
@@ -65,63 +71,14 @@ func handleRow(row string) int {
 	springLengths = copySpringLengthSlice(springLengths)
 	return generateCombinations(springSlice, springLengths)
 }
-
-func generateCombinations(springString []string, springLengths []int) int {
-	questionMarkIndices := findQuestionMarkIndices(springString)
-	iMaxStart := calculateIMax(springString, springLengths)
-
-	total := 0
-	var closure func(depth int)
-
-	closure = func(depth int) {
-		if depth == len(questionMarkIndices) {
-			total += isValidCombination(springLengths, springString, iMaxStart)
-			return
-		}
-		for _, elem := range []string{".", "#"} {
-			springString[questionMarkIndices[depth]] = elem
-			if !isValidPartial(springLengths, springString[:depth+1], iMaxStart) {
-				return
-			}
-
-			closure(depth + 1)
+func calculateNumberOfHashes(springString []string) int {
+	numHashes := 0
+	for _, val := range springString {
+		if val == "#" {
+			numHashes++
 		}
 	}
-	closure(0)
-	return total
-}
-
-func isValidCombination(springLengths []int, combination []string, iMax int) int {
-	i := 0
-	j := 0
-
-	for i <= iMax {
-		if combination[i] == "#" {
-
-			if !checkAllCharactersHash(combination[i : i+springLengths[j]]) {
-				return 0
-			}
-			// If we are placing anything other than the final set of #s, check for dot following it
-			if j < len(springLengths)-1 && !checkCharacterIsDot(combination[i+springLengths[j]]) {
-				return 0
-			}
-
-			iMax = recalculateIMax(iMax, j, springLengths)
-			i += springLengths[j] - 1
-			j++
-
-			if j == len(springLengths) {
-				// We have reached end of our combination. Check remaining strings are all "."
-				if !checkNoMoreHashes(i, combination) {
-					return 0
-				}
-				return 1
-			}
-
-		}
-		i++
-	}
-	return 0
+	return numHashes
 }
 
 func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) int {
@@ -132,3 +89,7 @@ func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) in
 func calculateIMax(springString []string, springLengths []int) int {
 	return len(springString) - (sum(springLengths) + len(springLengths) - 1)
 }
+
+/* To add Memoization:
+ * Store a table with number of springs placed and index as key.
+ */
