@@ -71,6 +71,7 @@ func handleRow(row string) int {
 	springLengths = copySpringLengthSlice(springLengths)
 	return generateCombinations(springSlice, springLengths)
 }
+
 func calculateNumberOfHashes(springString []string) int {
 	numHashes := 0
 	for _, val := range springString {
@@ -80,16 +81,3 @@ func calculateNumberOfHashes(springString []string) int {
 	}
 	return numHashes
 }
-
-func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) int {
-	// we will never have to deal with what comes after final placement so always use + 1
-	return currentMax + springLengths[springLengthsIndex] + 1
-}
-
-func calculateIMax(springString []string, springLengths []int) int {
-	return len(springString) - (sum(springLengths) + len(springLengths) - 1)
-}
-
-/* To add Memoization:
- * Store a table with number of springs placed and index as key.
- */

@@ -55,16 +55,6 @@ func copySpringSlice(slice []string) []string {
 	return copiedSlice[:len(copiedSlice)-1]
 }
 
-func findQuestionMarkIndices(slice []string) []int {
-	var indices []int
-	for i, elem := range slice {
-		if elem == "?" {
-			indices = append(indices, i)
-		}
-	}
-	return indices
-}
-
 func findQuestionMarkIndicesMap(slice []string) map[int]bool {
 	indices := map[int]bool{}
 	for i, elem := range slice {
@@ -83,4 +73,32 @@ func sum(nums []int) int {
 	}
 
 	return total
+}
+
+func countHashesAndFinalConsecutiveHashes(stringSlice []string) (int, int) {
+	totalHashes := 0
+	finalConsecutiveHashes := 0
+
+	for _, char := range stringSlice {
+		if char == "#" {
+			totalHashes++
+		}
+	}
+
+	for i := len(stringSlice) - 1; i >= 0; i-- {
+		if stringSlice[i] == "#" {
+			finalConsecutiveHashes++
+		} else if stringSlice[i] != "#" {
+			break
+		}
+	}
+
+	return totalHashes, finalConsecutiveHashes
+}
+
+func checkProposedSpringFits(springLength, combinationLength, currentIndex int, finalSpring bool) bool {
+	if finalSpring {
+		return currentIndex+springLength < combinationLength+1
+	}
+	return currentIndex+springLength < combinationLength
 }
