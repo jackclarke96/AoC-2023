@@ -6,23 +6,23 @@ type memoKey struct {
 	currentConsecutiveHashes int
 }
 
-func generateCombinations(springString []string, springLengths []int) int {
-	questionMarkIndices := findQuestionMarkIndicesMap(springString)
-	// iMaxStart := calculateIMax(springString, springLengths)
-	memo := make(map[memoKey]int)
+func generateCombinations(springString springCombination, springLengths springLengths) int {
 
+	questionMarkIndices := springString.findQuestionMarkIndices()
+	memo := make(map[memoKey]int)
 	var closure func(depth int) int
 
-	// The value of each node is equal to the sum of the values of its child nodes.
-	// If we are in a state in which:
-	//    * index is the same
-	//    * number of keys placed is the same
-	//    * the current char is the same at the index
-	// then the value of the children will be the same as the value of the children from the first exploration
-	// so we can just sum it on
+	// If we define the value of a node to be the number of valid combinations possible from that point onwards,
+	// then the value of a node is equal to the sum of the value of its children
+	// If we define the state to be a combination of:
+	//    * The index of the spring currently being evaluated
+	//    * number of hashes placed up to and including the current index
+	//    * The number of consecutive hashes leading up to the current index
+	// then the number of combinations from that point onwards is the same regardless of how the previous hashes are ordered.
+	// This means that the value of the children will be the same as the value of the children from the first exploration
 
 	closure = func(depth int) int {
-		totalHashes, currentHashes := countHashesAndFinalConsecutiveHashes(springString[:depth])
+		totalHashes, currentHashes := springString[:depth].countHashes(), springString[:depth].countClosingConsecutiveHashes()
 
 		memoKey := memoKey{depth, totalHashes, currentHashes}
 		if val, found := memo[memoKey]; found {
@@ -56,8 +56,8 @@ func generateCombinations(springString []string, springLengths []int) int {
 		return nodeValue
 	}
 
-	// Initial call to the closure with starting values
-	result := closure(0) // Assuming "" as the initial previous character
+	// Initial call to the closure with starting depth
+	result := closure(0)
 	return result
 
 }

@@ -1,6 +1,6 @@
 package main
 
-func isValidPartial(springLengths []int, partial []string) bool {
+func isValidPartial(springLengths springLengths, partial springCombination) bool {
 
 	i := 0
 	j := 0
@@ -20,7 +20,7 @@ func isValidPartial(springLengths []int, partial []string) bool {
 			if iEnd == i+springLengths[j] {
 
 				// check all characters until end of the supposed group of springs are hashes
-				if !checkAllCharactersHash(partial[i:iEnd]) {
+				if !partial[i:iEnd].checkAllCharactersHash() {
 					return false
 				}
 
@@ -35,7 +35,7 @@ func isValidPartial(springLengths []int, partial []string) bool {
 
 			} else {
 				// Else, the entire key does not fit before the end of the partial. Therefore remaining chars should all be #
-				return checkAllCharactersHash(partial[i:iEnd])
+				return partial[i:iEnd].checkAllCharactersHash()
 			}
 		}
 		i++

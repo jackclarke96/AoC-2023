@@ -9,8 +9,11 @@ import (
 	"time"
 )
 
+type springCombination []string
+type springLengths []int
+
 func main() {
-	start := time.Now() // Start timing
+	start := time.Now()
 
 	input, err := os.ReadFile("../files/input.txt")
 	if err != nil {
@@ -19,7 +22,8 @@ func main() {
 
 	fmt.Println(executeMain(string(input)))
 
-	elapsed := time.Since(start) // Calculate elapsed time
+	elapsed := time.Since(start)
+
 	fmt.Printf("Execution took %s\n", elapsed)
 }
 
@@ -31,7 +35,8 @@ func executeMain(s string) int {
 	numRowsPerCore := len(rows) / numCores
 	extraRows := len(rows) % numCores
 
-	totalChan := make(chan int, numCores) // Ensure the channel has enough buffer for all goroutines
+	// Ensure the channel has enough buffer for all goroutines
+	totalChan := make(chan int, numCores)
 
 	startRow := 0
 	for i := 0; i < numCores; i++ {
@@ -53,31 +58,28 @@ func executeMain(s string) int {
 	return total
 }
 
+// Loop through each row and gets number of combinations for each of them.
 func handleRows(rows []string) int {
 	total := 0
 	for _, row := range rows {
-		// fmt.Println("handling row", i)
 		total += handleRow(row)
 	}
 	return total
 }
 
+// function that parses individual row containing spring combinations and lengths of contiguous springs and returns number of combinations for that row.
 func handleRow(row string) int {
 	slice := strings.Split(row, " ")
 	springs, springLength := slice[0], slice[1]
-	springSlice := strings.Split(springs, "")
-	springSlice = copySpringSlice(springSlice)
-	springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
-	springLengths = copySpringLengthSlice(springLengths)
-	return generateCombinations(springSlice, springLengths)
-}
 
-func calculateNumberOfHashes(springString []string) int {
-	numHashes := 0
-	for _, val := range springString {
-		if val == "#" {
-			numHashes++
-		}
-	}
-	return numHashes
+	// Format the spring combination into slice of individual characters and unfold
+	springSlice := springCombination(strings.Split(springs, ""))
+	springSlice = springSlice.unfoldSpringArrangement()
+
+	// Format the spring combination into slice of ints representing lengths of contiguous broken springs and unfold
+	springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
+	springLengths = springLengths.unfoldSpringLengths()
+
+	// invoke algorithm to determine number of valid combinations
+	return generateCombinations(springSlice, springLengths)
 }

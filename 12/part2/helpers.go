@@ -2,7 +2,7 @@ package main
 
 import "strconv"
 
-func checkAllCharactersHash(s []string) bool {
+func (s springCombination) checkAllCharactersHash() bool {
 	for i := 0; i < len(s); i++ {
 		if s[i] != "#" {
 			return false
@@ -11,14 +11,10 @@ func checkAllCharactersHash(s []string) bool {
 	return true
 }
 
-func checkCharacterIsDot(s string) bool {
-	return s == "."
-}
-
-func checkNoMoreHashes(i int, s []string) bool {
+func (s springCombination) areAllRemainingDots(i int) bool {
 	if (i + 1) < len(s) {
 		for j := i + 1; j < len(s); j++ {
-			if s[j] == "#" {
+			if s[j] != "." {
 				return false
 			}
 		}
@@ -26,43 +22,67 @@ func checkNoMoreHashes(i int, s []string) bool {
 	return true
 }
 
-func convertSliceStringToInt(slice []string) ([]int, error) {
-	intSlice := make([]int, len(slice))
-	for i, str := range slice {
-		num, err := strconv.Atoi(str)
-		if err != nil {
-			return nil, err
-		}
-		intSlice[i] = num
-	}
-	return intSlice, nil
-}
-
-func copySpringLengthSlice(slice []int) []int {
-	copiedSlice := make([]int, 5*len(slice))
+func (s springLengths) unfoldSpringLengths() springLengths {
+	copiedSlice := make([]int, 5*len(s))
 	for i := 0; i < len(copiedSlice); i++ {
-		copiedSlice[i] = slice[i%(len(slice))]
+		copiedSlice[i] = s[i%(len(s))]
 	}
 	return copiedSlice
 }
 
-func copySpringSlice(slice []string) []string {
-	slice = append(slice, "?")
-	copiedSlice := make([]string, 5*len(slice))
+func (s springCombination) unfoldSpringArrangement() []string {
+	s = append(s, "?")
+	copiedSlice := make([]string, 5*len(s))
 	for i := 0; i < len(copiedSlice); i++ {
-		copiedSlice[i] = slice[i%(len(slice))]
+		copiedSlice[i] = s[i%(len(s))]
 	}
 	return copiedSlice[:len(copiedSlice)-1]
 }
 
-func findQuestionMarkIndicesMap(slice []string) map[int]bool {
+func (s springCombination) findQuestionMarkIndices() map[int]bool {
 	indices := map[int]bool{}
-	for i, elem := range slice {
+	for i, elem := range s {
 		if elem == "?" {
 			indices[i] = true
 		}
 	}
 	return indices
+}
+
+func (s springCombination) countHashes() int {
+	total := 0
+	for _, char := range s {
+		if char == "#" {
+			total++
+		}
+	}
+
+	return total
+}
+
+func (s springCombination) countClosingConsecutiveHashes() int {
+	consecutive := 0
+
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == "#" {
+			consecutive++
+		} else if s[i] != "#" {
+			break
+		}
+	}
+
+	return consecutive
+}
+
+func checkProposedSpringFits(springLength, combinationLength, currentIndex int, finalSpring bool) bool {
+	if finalSpring {
+		return currentIndex+springLength < combinationLength+1
+	}
+	return currentIndex+springLength < combinationLength
+}
+
+func checkCharacterIsDot(s string) bool {
+	return s == "."
 }
 
 func sum(nums []int) int {
@@ -75,30 +95,14 @@ func sum(nums []int) int {
 	return total
 }
 
-func countHashesAndFinalConsecutiveHashes(stringSlice []string) (int, int) {
-	totalHashes := 0
-	finalConsecutiveHashes := 0
-
-	for _, char := range stringSlice {
-		if char == "#" {
-			totalHashes++
+func convertSliceStringToInt(slice []string) (springLengths, error) {
+	intSlice := make(springLengths, len(slice))
+	for i, str := range slice {
+		num, err := strconv.Atoi(str)
+		if err != nil {
+			return nil, err
 		}
+		intSlice[i] = num
 	}
-
-	for i := len(stringSlice) - 1; i >= 0; i-- {
-		if stringSlice[i] == "#" {
-			finalConsecutiveHashes++
-		} else if stringSlice[i] != "#" {
-			break
-		}
-	}
-
-	return totalHashes, finalConsecutiveHashes
-}
-
-func checkProposedSpringFits(springLength, combinationLength, currentIndex int, finalSpring bool) bool {
-	if finalSpring {
-		return currentIndex+springLength < combinationLength+1
-	}
-	return currentIndex+springLength < combinationLength
+	return intSlice, nil
 }
