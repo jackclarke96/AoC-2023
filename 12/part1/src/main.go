@@ -6,25 +6,15 @@ import (
 	"os"
 	"runtime"
 	"strings"
-	"time"
 )
 
-type springCombination []string
-type springLengths []int
-
 func main() {
-	start := time.Now()
-
-	input, err := os.ReadFile("../files/input.txt")
+	input, err := os.ReadFile("../input.txt")
 	if err != nil {
 		log.Fatalf("Could not read input file: %v", err)
 	}
 
 	fmt.Println(executeMain(string(input)))
-
-	elapsed := time.Since(start)
-
-	fmt.Printf("Execution took %s\n", elapsed)
 }
 
 func executeMain(s string) int {
@@ -35,8 +25,7 @@ func executeMain(s string) int {
 	numRowsPerCore := len(rows) / numCores
 	extraRows := len(rows) % numCores
 
-	// Ensure the channel has enough buffer for all goroutines
-	totalChan := make(chan int, numCores)
+	totalChan := make(chan int, numCores) // Ensure the channel has enough buffer for all goroutines
 
 	startRow := 0
 	for i := 0; i < numCores; i++ {
@@ -58,7 +47,6 @@ func executeMain(s string) int {
 	return total
 }
 
-// Loop through each row and gets number of combinations for each of them.
 func handleRows(rows []string) int {
 	total := 0
 	for _, row := range rows {
@@ -67,19 +55,12 @@ func handleRows(rows []string) int {
 	return total
 }
 
-// function that parses individual row containing spring combinations and lengths of contiguous springs and returns number of combinations for that row.
 func handleRow(row string) int {
 	slice := strings.Split(row, " ")
 	springs, springLength := slice[0], slice[1]
 
-	// Format the spring combination into slice of individual characters and unfold
-	springSlice := springCombination(strings.Split(springs, ""))
-	springSlice = springSlice.unfoldSpringArrangement()
-
-	// Format the spring combination into slice of ints representing lengths of contiguous broken springs and unfold
+	springSlice := strings.Split(springs, "")
 	springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
-	springLengths = springLengths.unfoldSpringLengths()
 
-	// invoke algorithm to determine number of valid combinations
 	return generateCombinations(springSlice, springLengths)
 }

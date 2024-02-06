@@ -25,20 +25,26 @@ However, the engineer that produced the condition records also duplicated some o
 
 So, condition records with no unknown spring conditions might look like this:
 
+```
 #.#.### 1,1,3
 .#...#....###. 1,1,3
 .#.###.#.###### 1,3,1,6
 ####.#...#... 4,1,1
 #....######..#####. 1,6,5
 .###.##....# 3,2,1
+```
+
 However, the condition records are partially damaged; some of the springs' conditions are actually unknown (?). For example:
 
+```
 ???.### 1,1,3
 .??..??...?##. 1,1,3
 ?#?#?#?#?#?#?#? 1,3,1,6
 ????.#...#... 4,1,1
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1
+```
+
 Equipped with this information, it is your job to figure out how many different arrangements of operational and broken springs fit the given criteria in each row.
 
 In the first line (???.### 1,1,3), there is exactly one way separate groups of one, one, and three broken springs (in that order) can appear in that row: the first three unknown springs must be broken, then operational, then broken (#.#), making the whole row #.#.###.
@@ -47,6 +53,7 @@ The second line is more interesting: .??..??...?##. 1,1,3 could be a total of fo
 
 The last line is actually consistent with ten different arrangements! Because the first number is 3, the first and second ? must both be . (if either were #, the first number would have to be 4 or higher). However, the remaining run of unknown spring conditions have many different ways they could hold groups of two and one broken springs:
 
+```
 ?###???????? 3,2,1
 .###.##.#...
 .###.##..#..
@@ -58,8 +65,11 @@ The last line is actually consistent with ten different arrangements! Because th
 .###...##.#.
 .###...##..#
 .###....##.#
+```
+
 In this example, the number of possible arrangements for each row is:
 
+```
 ???.### 1,1,3 - 1 arrangement
 .??..??...?##. 1,1,3 - 4 arrangements
 ?#?#?#?#?#?#?#? 1,3,1,6 - 1 arrangement
@@ -67,5 +77,24 @@ In this example, the number of possible arrangements for each row is:
 ????.######..#####. 1,6,5 - 4 arrangements
 ?###???????? 3,2,1 - 10 arrangements
 Adding all of the possible arrangement counts together produces a total of 21 arrangements.
+```
 
 For each row, count all of the different arrangements of operational and broken springs that meet the given criteria. What is the sum of those counts?
+
+## Planned Solution
+
+Each row can be interpreted as a tree where at each "?", the immediately preceding character is a vertex with two children - one "#" child and one "." child. If the row starts with a "?" we have two trees to traverse.
+
+Defining a recursive function to iterate through the string, and generate the tree, we can go all the way to a final arrangement, then evaluate whether it is a valid combination.
+
+We can also prune early. At each "?", we can insert a "#" or a ".", and evaluate whether the combination so far:
+
+* Includes a group of contiguous keys that do not match the pattern described
+* No longer has enough space to fit in the contiguous groups
+* Has already placed all the contiguous groups but still has another hash later on
+
+If either of the above are true, no remaining path can lead to a valid combination of springs, so we can prune.
+
+As such, I will parse the string spring map into a slice. Then using my recursive function, iterate from left to right. Each time a new ? is discovered, test out both the "#" and "." in its place. If either are potentially valid, follow the path by recursively calling the function, building up a subslice over time.
+
+When a valid combination is found, add 1 to the total count of valid combinations. If a combination is deemed invalid, return out of the recursive function and continue from the previous depth.

@@ -57,3 +57,12 @@ func sum(nums []int) int {
 
 	return total
 }
+
+func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) int {
+	// we will never have to deal with what comes after final placement so always use + 1
+	return currentMax + springLengths[springLengthsIndex] + 1
+}
+
+func calculateIMax(springString []string, springLengths []int) int {
+	return len(springString) - (sum(springLengths) + len(springLengths) - 1)
+}

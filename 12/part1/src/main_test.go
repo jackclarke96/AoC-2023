@@ -97,20 +97,20 @@ func TestIsValidCombination(t *testing.T) {
 		maxI          int
 		expected      int
 	}{
-		// {
-		// 	name:          "All hashes in bounds",
-		// 	springLengths: []int{1, 1},
-		// 	combination:   []string{"#", ".", ".", ".", ".", "#", "."},
-		// 	maxI:          calculateIMax([]string{"#", ".", ".", ".", ".", "#", "."}, []int{1, 1}),
-		// 	expected:      1,
-		// },
-		// 		{
-		// 			name:          "Missing dot after hashes",
-		// 			springLengths: []int{1, 1, 3},
-		// 			combination:   []string{"#", ".", ".", ".", ".", "#", "."},
-		// 			maxI:          6,
-		// 			expected:      0,
-		// 		},
+		{
+			name:          "All hashes in bounds",
+			springLengths: []int{1, 1},
+			combination:   []string{"#", ".", ".", ".", ".", "#", "."},
+			maxI:          calculateIMax([]string{"#", ".", ".", ".", ".", "#", "."}, []int{1, 1}),
+			expected:      1,
+		},
+		{
+			name:          "Missing dot after hashes",
+			springLengths: []int{1, 1, 3},
+			combination:   []string{"#", ".", ".", ".", ".", "#", "."},
+			maxI:          calculateIMax([]string{"#", ".", ".", ".", ".", "#", "."}, []int{1, 1, 3}),
+			expected:      0,
+		},
 	}
 
 	// Execute test cases
