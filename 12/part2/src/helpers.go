@@ -19,9 +19,9 @@ func (s springCombination) unfoldSpringArrangement() []string {
 	return copiedSlice[:len(copiedSlice)-1]
 }
 
-func (s springCombination) findQuestionMarkIndices() map[int]bool {
+func (combination springCombination) findQuestionMarkIndices() map[int]bool {
 	indices := map[int]bool{}
-	for i, elem := range s {
+	for i, elem := range combination {
 		if elem == "?" {
 			indices[i] = true
 		}
@@ -29,9 +29,9 @@ func (s springCombination) findQuestionMarkIndices() map[int]bool {
 	return indices
 }
 
-func (s springCombination) countHashes() int {
+func (combination springCombination) countHashes() int {
 	total := 0
-	for _, char := range s {
+	for _, char := range combination {
 		if char == "#" {
 			total++
 		}
@@ -40,13 +40,13 @@ func (s springCombination) countHashes() int {
 	return total
 }
 
-func (s springCombination) countClosingConsecutiveHashes() int {
+func (combination springCombination) countClosingConsecutiveHashes() int {
 	consecutive := 0
 
-	for i := len(s) - 1; i >= 0; i-- {
-		if s[i] == "#" {
+	for i := len(combination) - 1; i >= 0; i-- {
+		if combination[i] == "#" {
 			consecutive++
-		} else if s[i] != "#" {
+		} else if combination[i] != "#" {
 			break
 		}
 	}
@@ -54,9 +54,9 @@ func (s springCombination) countClosingConsecutiveHashes() int {
 	return consecutive
 }
 
-func convertSliceStringToInt(slice []string) (springLengths, error) {
-	intSlice := make(springLengths, len(slice))
-	for i, str := range slice {
+func convertSliceStringToInt(s []string) (springLengths, error) {
+	intSlice := make(springLengths, len(s))
+	for i, str := range s {
 		num, err := strconv.Atoi(str)
 		if err != nil {
 			return nil, err

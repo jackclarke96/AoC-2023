@@ -1,10 +1,10 @@
 package main
 
-func getContiguousHashLengths(slice []string) []int {
+func (combination springCombination) getContiguousHashLengths() []int {
 	var lengths []int
 	count := 0 // Count consecutive '#'
 
-	for _, element := range slice {
+	for _, element := range combination {
 		if element == "#" {
 			count++
 		} else if count > 0 { // we have come to end of our # chain
@@ -21,18 +21,18 @@ func getContiguousHashLengths(slice []string) []int {
 	return lengths
 }
 
-func validateHashGroupLengthsWithFinalCharCheck(hashLengths, springLengths []int, finalChar string) bool {
-	if len(hashLengths) > len(springLengths) {
+func validateHashGroupLengthsWithFinalCharCheck(actual, desired springLengths, finalChar string) bool {
+	if len(actual) > len(desired) {
 		return false
 	}
 
-	for i := 0; i < len(hashLengths); i++ {
-		// For the last hash group, if finalChar is "#", it's okay for it to be less or equal
-		if finalChar == "#" && i == len(hashLengths)-1 {
-			if hashLengths[i] > springLengths[i] {
+	for i := 0; i < len(actual); i++ {
+		// For the last hash group, if finalChar is "#", it's okay for it to be less or equal as the next iteration may
+		if finalChar == "#" && i == len(actual)-1 {
+			if actual[i] > desired[i] {
 				return false
 			}
-		} else if hashLengths[i] != springLengths[i] {
+		} else if actual[i] != desired[i] {
 			// All other cases must match exactly
 			return false
 		}
@@ -40,16 +40,16 @@ func validateHashGroupLengthsWithFinalCharCheck(hashLengths, springLengths []int
 	return true
 }
 
-func validateExactHashGroupLengths(hashLengths, springLengths []int) bool {
-	for i := 0; i < len(hashLengths); i++ {
-		if hashLengths[i] != springLengths[i] {
+func validateExactHashGroupLengths(actual, desired []int) bool {
+	for i := 0; i < len(actual); i++ {
+		if actual[i] != desired[i] {
 			return false
 		}
 	}
 	return true
 }
 
-func checkStillRoomForRemainingSprings(remainingLengths []int, remainingSpace int) bool {
+func hasSufficientSpaceForSprings(remainingLengths []int, remainingSpace int) bool {
 	requiredSpace := sum(remainingLengths) + len(remainingLengths) - 1
 	return remainingSpace >= requiredSpace
 }

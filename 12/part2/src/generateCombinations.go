@@ -6,12 +6,12 @@ type memoKey struct {
 	currentConsecutiveHashes int
 }
 
-func generateCombinations(springString springCombination, springLengths springLengths) int {
+func generateCombinations(combination springCombination, lengths springLengths) int {
 
-	questionMarkIndices := springString.findQuestionMarkIndices()
+	questionMarkIndices := combination.findQuestionMarkIndices()
 	memo := make(map[memoKey]int)
 	var closure func(depth int) int
-	combinationLength := len(springString)
+	combinationLength := len(combination)
 
 	// If we define the value of a node to be the number of valid combinations possible from that point onwards,
 	// then the value of a node is equal to the sum of the value of its children
@@ -23,16 +23,19 @@ func generateCombinations(springString springCombination, springLengths springLe
 	// This means that the value of the children will be the same as the value of the children from the first exploration
 
 	closure = func(depth int) int {
-		totalHashes, currentHashes := springString[:depth].countHashes(), springString[:depth].countClosingConsecutiveHashes()
+		totalHashes, currentHashes := combination[:depth].countHashes(), combination[:depth].countClosingConsecutiveHashes()
 
+		// check memoKey to see if state already explored
 		memoKey := memoKey{depth, totalHashes, currentHashes}
 		if val, found := memo[memoKey]; found {
+			// fmt.Println(combination[:depth])
 			return val
 		}
 
 		// base case: We have a valid combination. Result = 1 if valid combination
-		if depth == len(springString) {
-			return isValidCombination(springLengths, springString)
+		if depth == len(combination) {
+			// fmt.Println(combination)
+			return isValidCombination(lengths, combination)
 		}
 
 		// Local total for combinations from this state forward. This will hold value of child nodes
@@ -40,16 +43,20 @@ func generateCombinations(springString springCombination, springLengths springLe
 		if questionMarkIndices[depth] {
 			for _, elem := range []string{"#", "."} {
 
-				springString[depth] = elem
+				combination[depth] = elem
 				// check combination is valid
-				if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
+				if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
 					nodeValue += closure(depth + 1)
+				} else {
+					// fmt.Println(combination[:depth+1])
 				}
 
 			}
 		} else {
-			if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
+			if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
 				nodeValue += closure(depth + 1)
+			} else {
+				// fmt.Println(combination[:depth+1])
 			}
 		}
 

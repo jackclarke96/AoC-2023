@@ -1,39 +1,39 @@
 package main
 
-import "fmt"
+func generateCombinations(combination springCombination, lengths springLengths) int {
 
-func generateCombinations(springString []string, springLengths []int) int {
-
-	questionMarkIndices := findQuestionMarkIndices(springString)
+	questionMarkIndices := combination.findQuestionMarkIndices()
 	var closure func(depth int)
+	combinationLength := len(combination)
 	total := 0
-	combinationLength := len(springString)
 
 	closure = func(depth int) {
 
-		// base case: We have a valid combination. Result = 1 if valid combination
-		if depth == len(springString) {
-			fmt.Println(springString)
-			total += isValidCombination(springLengths, springString)
+		// We have a valid combination. Result = 1 if valid combination
+		if depth == len(combination) {
+			// fmt.Println(combination)
+			total += isValidCombination(lengths, combination)
 			return
 		}
 
+		// Local total for combinations from this state forward. This will hold value of child nodes
 		if questionMarkIndices[depth] {
 			for _, elem := range []string{"#", "."} {
-				springString[depth] = elem
 
-				if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
+				combination[depth] = elem
+				// check combination is valid
+				if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
 					closure(depth + 1)
 				} else {
-					fmt.Println(springString[:depth+1])
+					// fmt.Println(combination[:depth+1])
 				}
 
 			}
 		} else {
-			if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
+			if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
 				closure(depth + 1)
 			} else {
-				fmt.Println(springString[:depth+1])
+				// fmt.Println(combination[:depth+1])
 			}
 		}
 
@@ -42,4 +42,5 @@ func generateCombinations(springString []string, springLengths []int) int {
 	// Initial call to the closure with starting depth
 	closure(0)
 	return total
+
 }
