@@ -73,13 +73,13 @@ func handleRow(row string) int {
 	springs, springLength := slice[0], slice[1]
 
 	// Format the spring combination into slice of individual characters and unfold
-	springSlice := springCombination(strings.Split(springs, ""))
-	springSlice = springSlice.unfoldSpringArrangement()
+	combination := springCombination(strings.Split(springs, ""))
+	combination = combination.unfoldSpringArrangement()
 
 	// Format the spring combination into slice of ints representing lengths of contiguous broken springs and unfold
 	springLengths, _ := convertSliceStringToInt(strings.Split(springLength, ","))
 	springLengths = springLengths.unfoldSpringLengths()
 
 	// invoke algorithm to determine number of valid combinations
-	return generateCombinations(springSlice, springLengths)
+	return generateCombinations(combination, springLengths)
 }

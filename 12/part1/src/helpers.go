@@ -2,33 +2,44 @@ package main
 
 import "strconv"
 
-func checkAllCharactersHash(s []string) bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] != "#" {
-			return false
+func (combination springCombination) findQuestionMarkIndices() map[int]bool {
+	indices := map[int]bool{}
+	for i, elem := range combination {
+		if elem == "?" {
+			indices[i] = true
 		}
 	}
-	return true
+	return indices
 }
 
-func checkCharacterIsDot(s string) bool {
-	return s == "."
-}
-
-func checkNoMoreHashes(i int, s []string) bool {
-	if (i + 1) < len(s) {
-		for j := i + 1; j < len(s); j++ {
-			if s[j] == "#" {
-				return false
-			}
+func (combination springCombination) countHashes() int {
+	total := 0
+	for _, char := range combination {
+		if char == "#" {
+			total++
 		}
 	}
-	return true
+
+	return total
 }
 
-func convertSliceStringToInt(slice []string) ([]int, error) {
-	intSlice := make([]int, len(slice))
-	for i, str := range slice {
+func (combination springCombination) countClosingConsecutiveHashes() int {
+	consecutive := 0
+
+	for i := len(combination) - 1; i >= 0; i-- {
+		if combination[i] == "#" {
+			consecutive++
+		} else if combination[i] != "#" {
+			break
+		}
+	}
+
+	return consecutive
+}
+
+func convertSliceStringToInt(s []string) (springLengths, error) {
+	intSlice := make(springLengths, len(s))
+	for i, str := range s {
 		num, err := strconv.Atoi(str)
 		if err != nil {
 			return nil, err
@@ -36,33 +47,4 @@ func convertSliceStringToInt(slice []string) ([]int, error) {
 		intSlice[i] = num
 	}
 	return intSlice, nil
-}
-
-func findQuestionMarkIndices(slice []string) []int {
-	var indices []int
-	for i, elem := range slice {
-		if elem == "?" {
-			indices = append(indices, i)
-		}
-	}
-	return indices
-}
-
-func sum(nums []int) int {
-	total := 0
-
-	for _, num := range nums {
-		total += num
-	}
-
-	return total
-}
-
-func recalculateIMax(currentMax, springLengthsIndex int, springLengths []int) int {
-	// we will never have to deal with what comes after final placement so always use + 1
-	return currentMax + springLengths[springLengthsIndex] + 1
-}
-
-func calculateIMax(springString []string, springLengths []int) int {
-	return len(springString) - (sum(springLengths) + len(springLengths) - 1)
 }
