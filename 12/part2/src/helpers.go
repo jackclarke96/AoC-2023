@@ -2,26 +2,6 @@ package main
 
 import "strconv"
 
-func (s springCombination) checkAllCharactersHash() bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] != "#" {
-			return false
-		}
-	}
-	return true
-}
-
-func (s springCombination) areAllRemainingDots(i int) bool {
-	if (i + 1) < len(s) {
-		for j := i + 1; j < len(s); j++ {
-			if s[j] != "." {
-				return false
-			}
-		}
-	}
-	return true
-}
-
 func (s springLengths) unfoldSpringLengths() springLengths {
 	copiedSlice := make([]int, 5*len(s))
 	for i := 0; i < len(copiedSlice); i++ {
@@ -72,27 +52,6 @@ func (s springCombination) countClosingConsecutiveHashes() int {
 	}
 
 	return consecutive
-}
-
-func checkProposedSpringFits(springLength, combinationLength, currentIndex int, finalSpring bool) bool {
-	if finalSpring {
-		return currentIndex+springLength < combinationLength+1
-	}
-	return currentIndex+springLength < combinationLength
-}
-
-func checkCharacterIsDot(s string) bool {
-	return s == "."
-}
-
-func sum(nums []int) int {
-	total := 0
-
-	for _, num := range nums {
-		total += num
-	}
-
-	return total
 }
 
 func convertSliceStringToInt(slice []string) (springLengths, error) {

@@ -11,6 +11,7 @@ func generateCombinations(springString springCombination, springLengths springLe
 	questionMarkIndices := springString.findQuestionMarkIndices()
 	memo := make(map[memoKey]int)
 	var closure func(depth int) int
+	combinationLength := len(springString)
 
 	// If we define the value of a node to be the number of valid combinations possible from that point onwards,
 	// then the value of a node is equal to the sum of the value of its children
@@ -41,13 +42,13 @@ func generateCombinations(springString springCombination, springLengths springLe
 
 				springString[depth] = elem
 				// check combination is valid
-				if isValidPartial(springLengths, springString[:depth+1]) {
+				if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
 					nodeValue += closure(depth + 1)
 				}
 
 			}
 		} else {
-			if isValidPartial(springLengths, springString[:depth+1]) {
+			if isValidPartial(springLengths, springString[:depth+1], combinationLength-(depth+1)) {
 				nodeValue += closure(depth + 1)
 			}
 		}
