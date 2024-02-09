@@ -3,40 +3,35 @@ package main
 func generateCombinations(combination springCombination, lengths springLengths) int {
 
 	questionMarkIndices := combination.findQuestionMarkIndices()
-	var closure func(depth int)
 	combinationLength := len(combination)
 	total := 0
+	var closure func(depth int)
 
 	closure = func(depth int) {
+		numRemainingChars := combinationLength - (depth + 1)
 
 		// We have a valid combination. Result = 1 if valid combination
 		if depth == len(combination) {
-			// fmt.Println(combination)
 			total += isValidCombination(lengths, combination)
 			return
 		}
 
-		// Local total for combinations from this state forward. This will hold value of child nodes
 		if questionMarkIndices[depth] {
+
+			// Bifurcation point. Sub in both # and . for ? and test partial is valid.
+			// If so, add to partial and recurse. Otherwise, prune
 			for _, elem := range []string{"#", "."} {
-
 				combination[depth] = elem
-				// check combination is valid
-				if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
+				if isValidPartial(lengths, combination[:depth+1], numRemainingChars) {
 					closure(depth + 1)
-				} else {
-					// fmt.Println(combination[:depth+1])
 				}
-
 			}
 		} else {
-			if isValidPartial(lengths, combination[:depth+1], combinationLength-(depth+1)) {
+			// Test next partial is valid. If so, recurse. Otherwise, prune.
+			if isValidPartial(lengths, combination[:depth+1], numRemainingChars) {
 				closure(depth + 1)
-			} else {
-				// fmt.Println(combination[:depth+1])
 			}
 		}
-
 	}
 
 	// Initial call to the closure with starting depth

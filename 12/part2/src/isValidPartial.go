@@ -1,6 +1,6 @@
 package main
 
-func isValidPartial(lengths springLengths, partial springCombination, remainingSpace int) bool {
+func isValidPartial(lengths springLengths, partial springCombination, numRemainingChars int) bool {
 
 	hashLengths := partial.getContiguousHashLengths()
 	finalChar := partial[len(partial)-1]
@@ -20,7 +20,7 @@ func isValidPartial(lengths springLengths, partial springCombination, remainingS
 	// so can rely on the previous check, also at a dot, in which the remaining springs were judged to have been still able to fit.
 	if finalChar == "." {
 		remainingLengths := lengths[len(hashLengths):]
-		return hasSufficientSpaceForSprings(remainingLengths, remainingSpace)
+		return hasSufficientSpaceForSprings(remainingLengths, numRemainingChars)
 	}
 
 	return true
