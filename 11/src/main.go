@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("failed to parse expansionSize into int: %v", errStrConv)
 	}
 
-	bs, errReadFile := os.ReadFile("./files/input.txt")
+	bs, errReadFile := os.ReadFile("../input.txt")
 	if errReadFile != nil {
 		log.Fatalf("Could not read input file: %v", errReadFile)
 	}
